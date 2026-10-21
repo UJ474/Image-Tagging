@@ -149,10 +149,10 @@ if __name__ == "__main__":
 
 ## 3. Verification & Acceptance Checklist
 
-- [ ] `extract_pixels` produces `(N, 784)` array with `float32` dtype.
-- [ ] `extract_hog_batch` produces `(N, 324)` array with `float32` dtype.
-- [ ] Running `python -m aml.features` successfully runs and populates `.npz` files in `data/cache/`.
-- [ ] Notebook `notebooks/01_feature_exploration.ipynb` runs completely and displays the side-by-side HOG visualizations.
+- [x] `extract_pixels` produces `(N, 784)` array with `float32` dtype.
+- [x] `extract_hog_batch` produces `(N, 324)` array with `float32` dtype.
+- [x] Running `python -m aml.features` successfully runs and populates `.npz` files in `data/cache/`.
+- [x] Notebook `notebooks/01_feature_exploration.ipynb` runs completely and displays the side-by-side HOG visualizations.
 
 ---
 
