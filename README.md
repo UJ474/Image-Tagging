@@ -146,3 +146,59 @@ source .venv/bin/activate  # On Windows PowerShell: .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 pip install -e . --no-deps
 ```
+
+### Verify the shared data pipeline
+
+Run from the repository root after activating `.venv`:
+
+```bash
+python -c "from aml.data import get_train_val_test_splits; d = get_train_val_test_splits(); print('X_train:', d['X_train'].shape, 'X_val:', d['X_val'].shape, 'X_test:', d['X_test'].shape)"
+```
+
+Expected: `X_train: (48000, 28, 28) X_val: (12000, 28, 28) X_test: (10000, 28, 28)`.
+The first call downloads the official IDX files from
+[Zalando's Fashion-MNIST repository](https://github.com/zalandoresearch/fashion-mnist)
+and verifies the published checksums. Later calls use
+`data/raw/fashion_mnist_raw.npz` offline. Images are `float32` in `[0, 1]`;
+labels are `int64`. Keep the official test set held out during model selection.
+Refit the selected configuration on `X_train_full`/`y_train_full` before final testing.
+
+Run the offline foundation checks without downloading the dataset:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### Shared evaluation helpers
+
+```python
+from aml.evaluation import compute_metrics, count_parameters, measure_inference_latency
+
+metrics = compute_metrics(y_test, model.predict(X_test_features))
+latency_ms = measure_inference_latency(model, X_test_features[:1000])
+```
+
+`compute_metrics` returns JSON-ready accuracy, macro F1, ten per-class recalls,
+and a 10-by-10 confusion matrix in the class order above. Macro F1 always averages
+all ten classes; undefined scores are zero. `count_parameters(model)` counts
+linear coefficients plus intercepts, or total random-forest nodes, and accepts
+fitted pipelines. For k-NN, report stored feature memory in **MiB**
+(`X_train_full_features.nbytes / 1024**2`), matching the k-NN guide's calculation.
+The legacy JSON field `parameter_count` therefore means weights for linear models,
+nodes for forests, and MiB for k-NN; these quantities are not directly comparable.
+
+Latency is the median of five warmed-up `predict` calls, divided by the batch size.
+Use the same hardware and 1,000-image batches for comparisons. Pipeline preprocessing
+is included; separately computed Pixels/HOG extraction is excluded.
+
+### Master comparison notebook
+
+```bash
+jupyter lab notebooks/00_master_aml_comparison.ipynb
+```
+
+Run all cells from either the repository root or `notebooks/`. The notebook checks
+the eight expected JSON files in `reports/results/`, displays missing contributions,
+and renders the final table, grouped charts, and findings when all eight are valid.
+It reads reported results only; it does not train models or reevaluate the test set.
+Final synthesis remains pending until the model owners provide their results.
