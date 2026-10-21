@@ -115,3 +115,85 @@ def extract_hog_batch(
         for i in range(n_samples)
     ]
     return np.asarray(descriptors, dtype=np.float32)
+
+
+def get_features(images, feature_type="pixels", cache_path=None):
+    """Extract or load cached features.
+
+    Parameters
+    ----------
+    images : np.ndarray or None
+        Array of shape (N, 28, 28) or (28, 28). Can be None if cache_path exists.
+    feature_type : str, default="pixels"
+        Type of feature to extract: "pixels" (784-d) or "hog" (324-d).
+    cache_path : str or Path or None, optional
+        Optional path to a .npz cache file.
+
+    Returns
+    -------
+    np.ndarray
+        Feature matrix of shape (N, 784) for pixels or (N, 324) for hog.
+    """
+    if cache_path is not None:
+        cache_path = Path(cache_path)
+        if cache_path.exists():
+            with np.load(cache_path, allow_pickle=False) as cached:
+                return cached["features"]
+
+    if images is None:
+        raise ValueError(f"Cache file {cache_path} does not exist and images is None.")
+
+    if feature_type == "pixels":
+        features = extract_pixels(images)
+    elif feature_type == "hog":
+        features = extract_hog_batch(images)
+    else:
+        raise ValueError(f"Unknown feature_type: '{feature_type}'. Expected 'pixels' or 'hog'.")
+
+    if cache_path is not None:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(cache_path, features=features)
+
+    return features
+
+
+def precompute_and_cache_all(data_dir="data/raw", cache_dir="data/cache"):
+    """Precompute and cache features for train, val, test, and full training splits.
+
+    Parameters
+    ----------
+    data_dir : str or Path, default="data/raw"
+        Directory containing raw Fashion-MNIST files.
+    cache_dir : str or Path, default="data/cache"
+        Directory where precomputed .npz archives will be saved.
+    """
+    from aml.data import get_train_val_test_splits
+
+    cache_dir = Path(cache_dir)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    print("Loading data splits...")
+    splits = get_train_val_test_splits(data_dir=data_dir)
+
+    split_names = ("train", "val", "test", "train_full")
+    for name in split_names:
+        imgs = splits[f"X_{name}"]
+        print(f"Extracting pixels for {name} ({len(imgs)} images)...")
+        get_features(
+            imgs,
+            feature_type="pixels",
+            cache_path=cache_dir / f"{name}_pixels.npz",
+        )
+
+        print(f"Extracting HOG for {name} ({len(imgs)} images)...")
+        get_features(
+            imgs,
+            feature_type="hog",
+            cache_path=cache_dir / f"{name}_hog.npz",
+        )
+
+    print(f"All features successfully cached in {cache_dir}.")
+
+
+if __name__ == "__main__":
+    precompute_and_cache_all()
