@@ -27,7 +27,7 @@ def build_svm_pipeline(C=1.0, max_iter=2_000):
     if max_iter < 1:
         raise ValueError("max_iter must be positive.")
     return Pipeline([
-        ("scaler", StandardScaler()),
+        ("scaler", StandardScaler(with_mean=False)),
         ("model", LinearSVC(C=C, max_iter=max_iter, random_state=42, dual="auto")),
     ])
 
