@@ -15,7 +15,7 @@
 You exclusively own the $k$-Nearest Neighbors ($k$-NN) classifier, its hyperparameter tuning on both representations, the computational latency and memory scaling analysis, and the resulting performance JSON files:
 
 - `src/aml/models/knn.py` (Pipeline definition, batched prediction, and tuning functions)
-- `notebooks/03_knn_experiments.ipynb` (Experiment notebook & latency study)
+- `notebooks/04_knn_experiments.ipynb` (Experiment notebook & latency study)
 - `reports/results/knn_pixels.json` & `reports/results/knn_hog.json` (Exported metrics)
 - `reports/figures/knn/` (Exported latency and dimensional scaling charts)
 
@@ -122,7 +122,7 @@ def evaluate_final_knn(X_train_full, y_train_full, X_test, y_test, best_params):
     return model, metrics, latency_ms, param_mb
 ```
 
-### Step 3: Run Experiments in `notebooks/03_knn_experiments.ipynb`
+### Step 3: Run Experiments in `notebooks/04_knn_experiments.ipynb`
 1. **Load Data & Features:**
    ```python
    from aml.data import get_train_val_test_splits
@@ -163,14 +163,14 @@ def evaluate_final_knn(X_train_full, y_train_full, X_test, y_test, best_params):
 - [ ] Grid search over $k \in [3, 5, 7, 9]$ and weights (`uniform` vs `distance`) completed for both representations.
 - [ ] Latency and dimensional scaling curves plotted and explained.
 - [ ] `reports/results/knn_pixels.json` and `reports/results/knn_hog.json` exist and match the standardized schema.
-- [ ] Notebook `notebooks/03_knn_experiments.ipynb` executes completely from top to bottom.
+- [ ] Notebook `notebooks/04_knn_experiments.ipynb` executes completely from top to bottom.
 
 ---
 
 ## 4. Git & PR Submission Instructions
 
 ```bash
-git add src/aml/models/knn.py notebooks/03_knn_experiments.ipynb reports/results/knn_*.json reports/figures/knn/
+git add src/aml/models/knn.py notebooks/04_knn_experiments.ipynb reports/results/knn_*.json reports/figures/knn/
 git commit -m "feat(knn): implement k-NN tuning, latency analysis, and result JSONs"
 git push -u origin feat/vipul-knn
 ```

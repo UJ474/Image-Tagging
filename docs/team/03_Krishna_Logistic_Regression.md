@@ -15,7 +15,7 @@
 You exclusively own the Logistic Regression classifier pipeline, its hyperparameter search across both feature sets, the weight coefficient visual analysis, and the resulting performance JSON files:
 
 - `src/aml/models/logreg.py` (Pipeline definition and tuning functions)
-- `notebooks/02_logistic_regression.ipynb` (Experiment notebook & weight visualization)
+- `notebooks/03_logistic_regression.ipynb` (Experiment notebook & weight visualization)
 - `reports/results/logreg_pixels.json` & `reports/results/logreg_hog.json` (Exported metrics)
 - `reports/figures/logreg/` (Exported weight heatmaps)
 
@@ -108,7 +108,7 @@ def evaluate_final_logreg(X_train_full, y_train_full, X_test, y_test, best_C):
     return pipeline, metrics, latency_ms, param_count
 ```
 
-### Step 3: Run Experiments in `notebooks/02_logistic_regression.ipynb`
+### Step 3: Run Experiments in `notebooks/03_logistic_regression.ipynb`
 1. **Load Data & Features:**
    ```python
    from aml.data import get_train_val_test_splits
@@ -148,14 +148,14 @@ def evaluate_final_logreg(X_train_full, y_train_full, X_test, y_test, best_C):
 - [ ] Tuning over $C \in [0.1, 1.0, 10.0]$ completed for both Pixels and HOG.
 - [ ] Weight heatmaps generated for all 10 garment classes.
 - [ ] `reports/results/logreg_pixels.json` and `reports/results/logreg_hog.json` exist and match the standardized schema.
-- [ ] Notebook `notebooks/02_logistic_regression.ipynb` runs end-to-end.
+- [ ] Notebook `notebooks/03_logistic_regression.ipynb` runs end-to-end.
 
 ---
 
 ## 4. Git & PR Submission Instructions
 
 ```bash
-git add src/aml/models/logreg.py notebooks/02_logistic_regression.ipynb reports/results/logreg_*.json reports/figures/logreg/
+git add src/aml/models/logreg.py notebooks/03_logistic_regression.ipynb reports/results/logreg_*.json reports/figures/logreg/
 git commit -m "feat(logreg): implement logistic regression tuning, weight visualizations, and result JSONs"
 git push -u origin feat/krishna-logreg
 ```

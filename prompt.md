@@ -41,7 +41,7 @@ Simply copy the specific block below that corresponds to your assignment:
 
 ### 1. Anant Jain (Milestone 1 & Final Integration)
 ```text
-I am Anant Jain (GitHub: anantjain-afk). I own Milestone 1 (Repo Foundation & Data Pipeline) and Milestone 4 (Final Master Notebook Integration) for Project 11: Image-Tagging.
+I am Anant Jain (GitHub: anantjain-afk). I own Milestone 1 (Repo Foundation, Data Pipeline & EDA) and Milestone 4 (Final Master Notebook Integration) for Project 11: Image-Tagging.
 
 Please read docs/team/README.md and my individual guide: docs/team/01_Anant_Setup_Data_MasterNotebook.md.
 
@@ -49,8 +49,9 @@ Tasks:
 1. Set up the project foundation: requirements.txt, pyproject.toml, .gitignore, and src/aml/__init__.py.
 2. Implement src/aml/data.py with official Fashion-MNIST downloading, [0, 1] normalization, and stratified 48k/12k/10k splits.
 3. Implement src/aml/evaluation.py with accuracy, macro F1, per-class recall, confusion matrix, and latency timer.
-4. Verify all functions and provide git commands to commit and merge Milestone 1 into main.
-5. When all 8 model JSON results exist in reports/results/, build notebooks/00_master_aml_comparison.ipynb to generate the master comparison table and plots.
+4. Build notebooks/01_exploratory_data_analysis.ipynb conducting full EDA: class balance, pixel intensity sparsity, mean silhouettes, variance heatmaps, and 2D PCA cluster projection.
+5. Verify all functions and provide git commands to commit and merge Milestone 1 into main.
+6. When all 8 model JSON results exist in reports/results/, build notebooks/00_master_aml_comparison.ipynb to generate the master comparison table and plots.
 ```
 
 ---
@@ -68,7 +69,7 @@ Tasks:
    - extract_hog_batch (skimage.feature.hog with 9 orientations, 7x7 cells, 2x2 blocks, L2-Hys -> 324-d vector)
    - get_features with disk caching in data/cache/*.npz
 3. Provide CLI runner in features.py to precompute and cache features for train, val, and test splits.
-4. Build notebooks/01_feature_exploration.ipynb with side-by-side original vs. HOG gradient map visualizations for all 10 garment classes.
+4. Build notebooks/02_feature_exploration.ipynb with side-by-side original vs. HOG gradient visualizations, upper-body ambiguity analysis, and orientation profiles across categories.
 5. Verify output dimensions, run checks, and prepare PR for Anant Jain (anantjain-afk) to merge.
 ```
 
@@ -85,7 +86,7 @@ Tasks:
 2. Implement src/aml/models/logreg.py using StandardScaler + LogisticRegression(solver="lbfgs", max_iter=1000).
 3. Tune regularization C in [0.1, 1.0, 10.0] on validation set for both Raw Pixels and HOG Descriptors.
 4. Fit best pipeline on full 60k training set and evaluate on 10k test set.
-5. In notebooks/02_logistic_regression.ipynb:
+5. In notebooks/03_logistic_regression.ipynb:
    - Present validation tuning table and test metrics.
    - Reshape the 10x784 weight matrix into 28x28 heatmaps per class and analyze linear template features.
 6. Export standardized results to reports/results/logreg_pixels.json and reports/results/logreg_hog.json.
@@ -105,7 +106,7 @@ Tasks:
 2. Implement src/aml/models/knn.py with KNeighborsClassifier and batched prediction helper (predict_in_batches) to prevent memory issues.
 3. Tune k in [3, 5, 7, 9] and weights in ['uniform', 'distance'] on validation set for both Raw Pixels and HOG Descriptors.
 4. Fit best model on full 60k training set and evaluate on 10k test set.
-5. In notebooks/03_knn_experiments.ipynb:
+5. In notebooks/04_knn_experiments.ipynb:
    - Present tuning table and test metrics.
    - Conduct an in-depth Latency & Dimensionality study: profile prediction latency per image on 784-d pixels vs 324-d HOG, and document memory footprint (storing 60,000 reference vectors).
 6. Export standardized results to reports/results/knn_pixels.json and reports/results/knn_hog.json.
@@ -125,7 +126,7 @@ Tasks:
 2. Implement src/aml/models/random_forest.py with parallelized RandomForestClassifier(n_jobs=-1).
 3. Tune n_estimators in [50, 100, 200] and max_depth in [10, 20, None] on validation set for both Raw Pixels and HOG Descriptors.
 4. Fit best forest on full 60k training set and evaluate on 10k test set.
-5. In notebooks/04_random_forest.ipynb:
+5. In notebooks/05_random_forest.ipynb:
    - Present tuning table and test metrics.
    - Conduct Overfitting Analysis: plot Train vs. Val accuracy across tree depth, highlighting memorization when max_depth=None.
    - Map Gini Feature Importances into a 28x28 spatial heatmap.
@@ -145,7 +146,7 @@ Tasks:
 1. Work on branch feat/utkarsh-svm-error-analysis.
 2. Implement src/aml/models/svm.py with StandardScaler + LinearSVC, tuning C in [0.1, 1.0, 10.0] on Pixels and HOG.
 3. Implement src/aml/error_analysis.py with plot_confusion_matrix, plot_garment_confusion_submatrix, and extract_misclassifications.
-4. In notebooks/05_svm_and_error_analysis.ipynb:
+4. In notebooks/06_svm_and_error_analysis.ipynb:
    - Present SVM tuning and test metrics.
    - Analyze why Shirt (Class 6) has low recall and frequently confuses with T-shirt, Pullover, and Coat.
    - Render a visual gallery of actual misclassified apparel images.

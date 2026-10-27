@@ -40,13 +40,13 @@ To guarantee **zero merge conflicts** and total clarity, the project follows a c
 
 ```mermaid
 flowchart TD
-    M1[Milestone 1: Anant Jain] -->|Merges data.py & evaluation.py to main| M2[Milestone 2: Kartik Mehra]
-    M2 -->|Merges features.py & cache to main| M3[Milestone 3: Parallel Model Training]
+    M1[Milestone 1: Anant Jain] -->|Merges data.py, evaluation.py & 01_eda.ipynb to main| M2[Milestone 2: Kartik Mehra]
+    M2 -->|Merges features.py & 02_features.ipynb to main| M3[Milestone 3: Parallel Model Training]
     subgraph M3 [Milestone 3: Parallel Model Training - Disjoint Files, No Collisions]
-        K[Krishna: logreg.py]
-        V[Vipul: knn.py]
-        A[Aditya: random_forest.py]
-        U[Utkarsh: svm.py & error_analysis.py]
+        K[Krishna: logreg.py & 03_logreg.ipynb]
+        V[Vipul: knn.py & 04_knn.ipynb]
+        A[Aditya: random_forest.py & 05_rf.ipynb]
+        U[Utkarsh: svm.py, 06_svm.ipynb & error_analysis.py]
     end
     M3 -->|Each opens PR; Anant merges all 4 to main| M4[Milestone 4: Final Synthesis]
     subgraph M4 [Milestone 4: Final Synthesis]
@@ -56,13 +56,13 @@ flowchart TD
 ```
 
 ### Milestone Schedule:
-1. **Milestone 1 (Foundation & Data):** **Anant** sets up repository structure, dependencies (`requirements.txt`), data loader (`src/aml/data.py`), and evaluation helpers (`src/aml/evaluation.py`). Anant merges to `main`.
-2. **Milestone 2 (Feature Pipeline & Caching):** **Kartik** pulls `main`, implements `src/aml/features.py` (Pixels + HOG + disk caching utility), and `notebooks/01_feature_exploration.ipynb`. Kartik opens PR $\rightarrow$ Anant merges to `main`.
+1. **Milestone 1 (Foundation, Data & EDA):** **Anant** sets up repository structure, dependencies (`requirements.txt`), data loader (`src/aml/data.py`), evaluation helpers (`src/aml/evaluation.py`), and executes the complete exploratory data analysis in `notebooks/01_exploratory_data_analysis.ipynb`. Anant merges to `main`.
+2. **Milestone 2 (Feature Pipeline & Caching):** **Kartik** pulls `main`, implements `src/aml/features.py` (Pixels + HOG + disk caching utility), and `notebooks/02_feature_exploration.ipynb`. Kartik opens PR $\rightarrow$ Anant merges to `main`.
 3. **Milestone 3 (Parallel Model Development):** **Krishna**, **Vipul**, **Aditya**, and **Utkarsh** pull `main`. Each member works on **strictly isolated, disjoint files**. No two members edit the same file, guaranteeing **zero merge conflicts**:
-   - Krishna owns `src/aml/models/logreg.py`, `notebooks/02_logistic_regression.ipynb`, `reports/results/logreg_*.json`
-   - Vipul owns `src/aml/models/knn.py`, `notebooks/03_knn_experiments.ipynb`, `reports/results/knn_*.json`
-   - Aditya owns `src/aml/models/random_forest.py`, `notebooks/04_random_forest.ipynb`, `reports/results/rf_*.json`
-   - Utkarsh owns `src/aml/models/svm.py`, `src/aml/error_analysis.py`, `notebooks/05_svm_and_error_analysis.ipynb`, `reports/results/svm_*.json`
+   - Krishna owns `src/aml/models/logreg.py`, `notebooks/03_logistic_regression.ipynb`, `reports/results/logreg_*.json`
+   - Vipul owns `src/aml/models/knn.py`, `notebooks/04_knn_experiments.ipynb`, `reports/results/knn_*.json`
+   - Aditya owns `src/aml/models/random_forest.py`, `notebooks/05_random_forest.ipynb`, `reports/results/rf_*.json`
+   - Utkarsh owns `src/aml/models/svm.py`, `src/aml/error_analysis.py`, `notebooks/06_svm_and_error_analysis.ipynb`, `reports/results/svm_*.json`
    Each member completes their notebook, exports their 2 JSON result files, and opens a PR. Anant reviews and merges each into `main`.
 4. **Milestone 4 (Final Synthesis & Gap Report):**
    - Anant pulls `main` (now containing all 8 JSON results) and runs `notebooks/00_master_aml_comparison.ipynb` to render the unified comparison table and charts.
@@ -76,7 +76,7 @@ Every member has a dedicated, crystal-clear markdown guide detailing their exact
 
 | Order | Member | GitHub | Phase 1 Ownership | Guide Link |
 |---|---|---|---|---|
-| **1st** | **Anant Jain** | [`anantjain-afk`](https://github.com/anantjain-afk) | **Repository Setup, Data Pipeline & Master Notebook** | [01_Anant_Setup_Data_MasterNotebook.md](01_Anant_Setup_Data_MasterNotebook.md) |
+| **1st** | **Anant Jain** | [`anantjain-afk`](https://github.com/anantjain-afk) | **Repository Setup, Data Pipeline, EDA & Master Notebook** | [01_Anant_Setup_Data_MasterNotebook.md](01_Anant_Setup_Data_MasterNotebook.md) |
 | **2nd** | **Kartik Mehra** | [`KartikMehra22`](https://github.com/KartikMehra22) | **Feature Engineering (Pixels & HOG), Caching & Feature Analysis** | [02_Kartik_Feature_Extraction_HOG.md](02_Kartik_Feature_Extraction_HOG.md) |
 | **3rd (Parallel)** | **Krishna Gehlot** | [`NSTKrishna`](https://github.com/NSTKrishna) | **Model 1: Logistic Regression & Weight Coefficient Heatmaps** | [03_Krishna_Logistic_Regression.md](03_Krishna_Logistic_Regression.md) |
 | **3rd (Parallel)** | **Vipul Sharma** | [`vs-code06`](https://github.com/vs-code06) | **Model 2: $k$-Nearest Neighbors ($k$-NN) & Latency/Scaling Analysis** | [04_Vipul_KNN_Classifier.md](04_Vipul_KNN_Classifier.md) |

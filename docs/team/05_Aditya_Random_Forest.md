@@ -15,7 +15,7 @@
 You exclusively own the Random Forest classifier pipeline, its hyperparameter search across both feature sets, the tree depth/overfitting analysis, feature importance mapping, and the resulting performance JSON files:
 
 - `src/aml/models/random_forest.py` (Pipeline definition and tuning functions)
-- `notebooks/04_random_forest.ipynb` (Experiment notebook & feature importance study)
+- `notebooks/05_random_forest.ipynb` (Experiment notebook & feature importance study)
 - `reports/results/rf_pixels.json` & `reports/results/rf_hog.json` (Exported metrics)
 - `reports/figures/rf/` (Exported overfitting curves and importance heatmaps)
 
@@ -107,7 +107,7 @@ def evaluate_final_rf(X_train_full, y_train_full, X_test, y_test, best_params):
     return model, metrics, latency_ms, total_nodes
 ```
 
-### Step 3: Run Experiments in `notebooks/04_random_forest.ipynb`
+### Step 3: Run Experiments in `notebooks/05_random_forest.ipynb`
 1. **Load Data & Features:**
    ```python
    from aml.data import get_train_val_test_splits
@@ -147,14 +147,14 @@ def evaluate_final_rf(X_train_full, y_train_full, X_test, y_test, best_params):
 - [ ] Train vs. validation overfitting curve plotted and interpreted.
 - [ ] $28 \times 28$ Gini feature importance heatmap rendered and saved.
 - [ ] `reports/results/rf_pixels.json` and `reports/results/rf_hog.json` exist and match the standardized schema.
-- [ ] Notebook `notebooks/04_random_forest.ipynb` executes completely from top to bottom.
+- [ ] Notebook `notebooks/05_random_forest.ipynb` executes completely from top to bottom.
 
 ---
 
 ## 4. Git & PR Submission Instructions
 
 ```bash
-git add src/aml/models/random_forest.py notebooks/04_random_forest.ipynb reports/results/rf_*.json reports/figures/rf/
+git add src/aml/models/random_forest.py notebooks/05_random_forest.ipynb reports/results/rf_*.json reports/figures/rf/
 git commit -m "feat(rf): implement random forest tuning, overfitting curves, and feature importance"
 git push -u origin feat/aditya-rf
 ```

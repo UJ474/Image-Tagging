@@ -3,12 +3,16 @@
 ## Scope and evidence
 
 Phase 1 evaluates Fashion-MNIST with flattened pixels and fixed Histogram of
-Oriented Gradients (HOG) descriptors. The SVM experiment exports a normalized
-ten-class confusion matrix for each representation, and the accompanying
-notebook creates a focused matrix for T-shirt/top (0), Pullover (2), Coat (4),
-and Shirt (6), plus galleries of actual test-set mistakes. These artifacts make
-the qualitative claim auditable: this report refers to the saved matrices and
-images rather than treating an aggregate accuracy score as an explanation.
+Oriented Gradients (HOG) descriptors. The exploratory data analysis
+(`notebooks/01_exploratory_data_analysis.ipynb`) and feature exploration
+(`notebooks/02_feature_exploration.ipynb`) established early geometric evidence
+for why certain garment categories overlap. The Linear SVM experiment
+(`notebooks/06_svm_and_error_analysis.ipynb`) exports a normalized ten-class
+confusion matrix for each representation, alongside focused submatrices for
+T-shirt/top (0), Pullover (2), Coat (4), and Shirt (6), plus galleries of actual
+test-set mistakes. These artifacts make the qualitative claim auditable: this
+report refers to the saved matrices, orientation profiles, and error galleries
+rather than treating an aggregate accuracy score as an explanation.
 
 ## The shirt dilemma
 
@@ -30,23 +34,29 @@ discarding footwear and accessory predictions.
 
 ### Flattened pixels
 
-Flattening converts a 28-by-28 garment into 784 independent positions. A
-linear classifier can attach a weight to each position, but it has no built-in
-notion that a collar moved slightly upward is the same cue, that two nearby
-pixels form a seam, or that left and right sleeve patterns should be composed.
-Small translations, pose variation, and contrast changes therefore alter many
-coordinates even when the garment category is unchanged.
+Flattening converts a 28-by-28 garment into 784 independent positions. As
+demonstrated in the EDA archetype analysis (`class_mean_and_variance.png`),
+upper-body tops share a blurry, overlapping mean silhouette with high variance
+clustered at necklines and sleeve seams. The 2D PCA projection
+(`pca_2d_projection.png`) corroborates that tops merge into a dense, overlapping
+cluster in pixel space. A linear classifier can attach a weight to each position,
+but it has no built-in notion that a collar moved slightly upward is the same cue,
+that two nearby pixels form a seam, or that left and right sleeve patterns should
+be composed. Small translations, pose variation, and contrast changes therefore
+alter many coordinates even when the garment category is unchanged.
 
 ### HOG descriptors
 
 HOG improves the representation by summarizing local edge orientations, which
 helps with distinct global silhouettes such as trousers, bags, sandals, and
-boots. However, it fixes the useful edge vocabulary before seeing the task.
-It cannot learn that a particular cluster of fine edges around the neckline is
-more diagnostic than a similar edge pattern elsewhere, nor can it integrate
-button rows, fabric weave, collar shape, and sleeve geometry into a semantic
-concept of a shirt. Pooling these gradients into cells also removes precisely
-the small spatial cues needed for fine-grained upper-body distinctions.
+boots. As evidenced in the orientation profile analysis
+(`hog_orientation_profiles.png`), trousers have sharp vertical orientation peaks
+and footwear has dominant horizontal boundaries. However, HOG fixes the useful
+edge vocabulary before seeing the task. For upper-body garments, orientation
+energy is diffuse and non-specific. Crucially, as visual comparisons demonstrate
+(`upper_body_hog_comparison.png`), pooling gradients into 7-by-7 pixel cells
+smooths away precisely the fine spatial details (collar points, button plackets,
+zippers, and lapel seams) needed to separate a Shirt from a T-shirt or Coat.
 
 ### Linear decision boundaries
 
@@ -68,3 +78,4 @@ the upper-body submatrix with these AML baselines. A targeted improvement in
 Shirt recall and reduced Shirt-to-T-shirt/Pullover confusion would be stronger
 evidence than accuracy alone that learned hierarchical spatial features close
 the identified gap.
+

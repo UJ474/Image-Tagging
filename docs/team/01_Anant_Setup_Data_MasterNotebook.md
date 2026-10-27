@@ -19,7 +19,9 @@ You are responsible for establishing the repository foundation so your teammates
 - `src/aml/__init__.py`
 - `src/aml/data.py` (Official dataset downloader, normalizer, and stratified splits)
 - `src/aml/evaluation.py` (Metric computation, parameter counter, and latency benchmark)
+- `notebooks/01_exploratory_data_analysis.ipynb` (Comprehensive dataset exploration, class balance, archetypes, and PCA)
 - `notebooks/00_master_aml_comparison.ipynb` (Final deliverable notebook integrating all 8 models)
+- `reports/figures/eda/` (Exported dataset analysis figures)
 - `README.md` (Project root documentation)
 
 ---

@@ -15,7 +15,7 @@
 You own the feature extraction pipeline, the local caching utility that enables instantaneous feature loading for your teammates, and the feature exploration notebook:
 
 - `src/aml/features.py` (Flattened pixel and HOG extractors + disk caching)
-- `notebooks/01_feature_exploration.ipynb` (HOG gradient visualizations and feature comparisons)
+- `notebooks/02_feature_exploration.ipynb` (HOG gradient visualizations and feature comparisons)
 - `reports/figures/features/` (Exported HOG visualization figures)
 - `data/cache/` (Local feature cache directory)
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     precompute_and_cache_all()
 ```
 
-### Step 3: Build Feature Exploration Notebook (`notebooks/01_feature_exploration.ipynb`)
+### Step 3: Build Feature Exploration Notebook (`notebooks/02_feature_exploration.ipynb`)
 1. **Visualizing HOG Gradient Maps:**
    - For a representative sample of each of the 10 clothing categories, run `hog(image, ..., visualize=True)` to extract both the feature descriptor and the gradient visualization image.
    - Display a $10 \times 2$ grid: Original $28 \times 28$ grayscale image on the left, HOG orientation map on the right.
@@ -152,7 +152,7 @@ if __name__ == "__main__":
 - [x] `extract_pixels` produces `(N, 784)` array with `float32` dtype.
 - [x] `extract_hog_batch` produces `(N, 324)` array with `float32` dtype.
 - [x] Running `python -m aml.features` successfully runs and populates `.npz` files in `data/cache/`.
-- [x] Notebook `notebooks/01_feature_exploration.ipynb` runs completely and displays the side-by-side HOG visualizations.
+- [x] Notebook `notebooks/02_feature_exploration.ipynb` runs completely and displays the side-by-side HOG visualizations.
 
 ---
 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 git status
 
 # Stage and commit your files
-git add src/aml/features.py notebooks/01_feature_exploration.ipynb reports/figures/features/
+git add src/aml/features.py notebooks/02_feature_exploration.ipynb reports/figures/features/
 git commit -m "feat(features): implement pixel and HOG extraction with disk caching and visual exploration"
 git push -u origin feat/kartik-features
 ```

@@ -16,7 +16,7 @@ You exclusively own the Support Vector Machine (Linear SVM) pipeline, the cross-
 
 - `src/aml/models/svm.py` (Pipeline definition and tuning functions)
 - `src/aml/error_analysis.py` (Confusion matrix plotting and misclassification extractors)
-- `notebooks/05_svm_and_error_analysis.ipynb` (Experiment notebook & confusion deep-dive)
+- `notebooks/06_svm_and_error_analysis.ipynb` (Experiment notebook & confusion deep-dive)
 - `reports/error_analysis.md` (Academic synthesis: why AML fails on similar apparel)
 - `reports/results/svm_pixels.json` & `reports/results/svm_hog.json` (Exported metrics)
 - `reports/figures/errors/` (Exported confusion matrices and visual error galleries)
@@ -181,7 +181,7 @@ def extract_misclassifications(y_true, y_pred, X_images, true_class, pred_class,
     return X_images[selected_indices], selected_indices
 ```
 
-### Step 4: Run Experiments & Write Gap Report (`notebooks/05_svm_and_error_analysis.ipynb` & `reports/error_analysis.md`)
+### Step 4: Run Experiments & Write Gap Report (`notebooks/06_svm_and_error_analysis.ipynb` & `reports/error_analysis.md`)
 1. **Train & Tune SVM:**
    - Tune $C \in [0.1, 1.0, 10.0]$ on Pixels and HOG.
    - Refit optimal models on 60,000 train set and evaluate on 10,000 test set.
@@ -208,14 +208,14 @@ def extract_misclassifications(y_true, y_pred, X_images, true_class, pred_class,
 - [ ] Visual misclassification gallery rendered with test image examples.
 - [ ] `reports/error_analysis.md` thoroughly documents "The Gap" and Phase 2 justification.
 - [ ] `reports/results/svm_pixels.json` and `reports/results/svm_hog.json` exist and match the standardized schema.
-- [ ] Notebook `notebooks/05_svm_and_error_analysis.ipynb` executes completely from top to bottom.
+- [ ] Notebook `notebooks/06_svm_and_error_analysis.ipynb` executes completely from top to bottom.
 
 ---
 
 ## 4. Git & PR Submission Instructions
 
 ```bash
-git add src/aml/models/svm.py src/aml/error_analysis.py notebooks/05_svm_and_error_analysis.ipynb reports/error_analysis.md reports/results/svm_*.json reports/figures/errors/
+git add src/aml/models/svm.py src/aml/error_analysis.py notebooks/06_svm_and_error_analysis.ipynb reports/error_analysis.md reports/results/svm_*.json reports/figures/errors/
 git commit -m "feat(svm): implement Linear SVM tuning, garment confusion analysis, and Phase 2 gap report"
 git push -u origin feat/utkarsh-svm-error-analysis
 ```
