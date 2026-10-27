@@ -61,18 +61,111 @@ flowchart TD
 
 ---
 
-## 3. Team Member Assignments & Guides
+## 3. Team Member Work Breakdown & Detailed Contributions
 
-| Order | Member | GitHub | Phase 1 Ownership | Key Owned Files | Individual Guide |
+To ensure academic accountability and technical clarity, every component of this project was individually owned, implemented, and documented by a dedicated team member. Below is the comprehensive breakdown of who did what work:
+
+| Order | Member | GitHub Handle | Phase 1 Role & Ownership | Key Owned Files | Individual Guide |
 |---|---|---|---|---|---|
-| **1st** | **Anant Jain** | [`anantjain-afk`](https://github.com/anantjain-afk) | **Repository Setup, Data Pipeline, EDA & Master Notebook** | `src/aml/data.py`<br>`src/aml/evaluation.py`<br>`notebooks/01_exploratory_data_analysis.ipynb`<br>`notebooks/00_master_aml_comparison.ipynb`<br>`reports/figures/eda/` | [01_Anant_Setup_Data_MasterNotebook.md](docs/team/01_Anant_Setup_Data_MasterNotebook.md) |
-| **2nd** | **Kartik Mehra** | [`KartikMehra22`](https://github.com/KartikMehra22) | **Feature Extraction (Pixels & HOG), Caching & Exploration** | `src/aml/features.py`<br>`notebooks/02_feature_exploration.ipynb`<br>`data/cache/` utility<br>`reports/figures/features/` | [02_Kartik_Feature_Extraction_HOG.md](docs/team/02_Kartik_Feature_Extraction_HOG.md) |
-| **3rd** | **Krishna Gehlot** | [`NSTKrishna`](https://github.com/NSTKrishna) | **Model 1: Logistic Regression & Weight Heatmaps** | `src/aml/models/logreg.py`<br>`notebooks/03_logistic_regression.ipynb`<br>`reports/results/logreg_*.json`<br>`reports/figures/logreg/` | [03_Krishna_Logistic_Regression.md](docs/team/03_Krishna_Logistic_Regression.md) |
-| **4th** | **Vipul Sharma** | [`vs-code06`](https://github.com/vs-code06) | **Model 2: $k$-Nearest Neighbors ($k$-NN) & Latency Profiling** | `src/aml/models/knn.py`<br>`notebooks/04_knn_experiments.ipynb`<br>`reports/results/knn_*.json`<br>`reports/figures/knn/` | [04_Vipul_KNN_Classifier.md](docs/team/04_Vipul_KNN_Classifier.md) |
-| **5th** | **Aditya** | [`AdityaInnovates`](https://github.com/AdityaInnovates) | **Model 3: Random Forest & Overfitting / Feature Importance** | `src/aml/models/random_forest.py`<br>`notebooks/05_random_forest.ipynb`<br>`reports/results/rf_*.json`<br>`reports/figures/rf/` | [05_Aditya_Random_Forest.md](docs/team/05_Aditya_Random_Forest.md) |
-| **6th** | **Utkarsh Jain** | [`UJ474`](https://github.com/UJ474) | **Model 4: Support Vector Machine (SVM) & Garment Error Analysis** | `src/aml/models/svm.py`<br>`src/aml/error_analysis.py`<br>`notebooks/06_svm_and_error_analysis.ipynb`<br>`reports/error_analysis.md`<br>`reports/figures/errors/` | [06_Utkarsh_SVM_Error_Analysis.md](docs/team/06_Utkarsh_SVM_Error_Analysis.md) |
+| **1st** | **Anant Jain** | [`anantjain-afk`](https://github.com/anantjain-afk) | **Repository Scaffolding, Data Pipeline, EDA & Master Benchmark Integration** | `src/aml/data.py`<br>`src/aml/evaluation.py`<br>`notebooks/01_exploratory_data_analysis.ipynb`<br>`notebooks/00_master_aml_comparison.ipynb`<br>`reports/figures/eda/` | [01_Anant_Setup_Data_MasterNotebook.md](docs/team/01_Anant_Setup_Data_MasterNotebook.md) |
+| **2nd** | **Kartik Mehra** | [`KartikMehra22`](https://github.com/KartikMehra22) | **Feature Engineering (Pixels & HOG), Caching Utility & Exploration** | `src/aml/features.py`<br>`notebooks/02_feature_exploration.ipynb`<br>`data/cache/` utility<br>`reports/figures/features/` | [02_Kartik_Feature_Extraction_HOG.md](docs/team/02_Kartik_Feature_Extraction_HOG.md) |
+| **3rd** | **Krishna Gehlot** | [`NSTKrishna`](https://github.com/NSTKrishna) | **Model 1: Logistic Regression Pipeline & Weight Coefficient Heatmaps** | `src/aml/models/logreg.py`<br>`notebooks/03_logistic_regression.ipynb`<br>`reports/results/logreg_*.json`<br>`reports/figures/logreg/` | [03_Krishna_Logistic_Regression.md](docs/team/03_Krishna_Logistic_Regression.md) |
+| **4th** | **Vipul Sharma** | [`vs-code06`](https://github.com/vs-code06) | **Model 2: $k$-Nearest Neighbors ($k$-NN) & Latency/Memory Scaling Analysis** | `src/aml/models/knn.py`<br>`notebooks/04_knn_experiments.ipynb`<br>`reports/results/knn_*.json`<br>`reports/figures/knn/` | [04_Vipul_KNN_Classifier.md](docs/team/04_Vipul_KNN_Classifier.md) |
+| **5th** | **Aditya** | [`AdityaInnovates`](https://github.com/AdityaInnovates) | **Model 3: Random Forest Ensemble, Overfitting & Feature Importance** | `src/aml/models/random_forest.py`<br>`notebooks/05_random_forest.ipynb`<br>`reports/results/rf_*.json`<br>`reports/figures/rf/` | [05_Aditya_Random_Forest.md](docs/team/05_Aditya_Random_Forest.md) |
+| **6th** | **Utkarsh Jain** | [`UJ474`](https://github.com/UJ474) | **Model 4: Support Vector Machine (Linear SVM) & Garment Error Analysis** | `src/aml/models/svm.py`<br>`src/aml/error_analysis.py`<br>`notebooks/06_svm_and_error_analysis.ipynb`<br>`reports/error_analysis.md`<br>`reports/figures/errors/` | [06_Utkarsh_SVM_Error_Analysis.md](docs/team/06_Utkarsh_SVM_Error_Analysis.md) |
 
-For comprehensive technical rules and coordination details, see [**`docs/team/README.md`**](docs/team/README.md).
+---
+
+### Detailed Member Contributions & Deliverables
+
+#### 1. Anant Jain ([`anantjain-afk`](https://github.com/anantjain-afk)) — Repository Setup, Data Pipeline, EDA & Master Synthesis
+- **Role:** Project Lead, Repository Owner, Milestone 1 & Milestone 4 Lead.
+- **Merge Authority:** Sole authorized member responsible for reviewing and merging all teammate Pull Requests into `main`.
+- **Core Engineering & Deliverables:**
+  - **Repository Architecture:** Established project structure, `.gitignore`, dependency specifications in `requirements.txt`, and package configuration in `pyproject.toml`.
+  - **Shared Data Pipeline ([`src/aml/data.py`](src/aml/data.py)):** Built checksum-verified automated downloader for official Fashion-MNIST IDX binaries; implemented `float32` normalization into $[0.0, 1.0]$; constructed stratified 48,000 / 12,000 train/validation splits (`random_state=42`) and held out the official 10,000-image test set; added atomic compressed `.npz` caching.
+  - **Evaluation Standards ([`src/aml/evaluation.py`](src/aml/evaluation.py)):** Implemented team-wide `compute_metrics()` (accuracy, macro F1, 10 per-class recalls, and $10 \times 10$ confusion matrix), `count_parameters()` for linear models and tree ensembles, and `measure_inference_latency()` with warmed-up median batch timing.
+  - **Exploratory Data Analysis ([`notebooks/01_exploratory_data_analysis.ipynb`](notebooks/01_exploratory_data_analysis.ipynb)):** Conducted rigorous dataset audit verifying exact 6,000/1,000 image class balance; analyzed pixel intensity distributions; generated mean archetype and pixel-wise variance heatmaps; built a 25-image variety grid; executed unsupervised 2D PCA projection demonstrating the topological entanglement of upper-body tops in pixel space.
+  - **Master Comparison Notebook ([`notebooks/00_master_aml_comparison.ipynb`](notebooks/00_master_aml_comparison.ipynb)):** Final integration deliverable that validates all 8 JSON records in `reports/results/`, compiles the comprehensive cross-model benchmark table, renders accuracy/F1 bar charts, and synthesizes overall Phase 1 conclusions.
+  - **Unit Test Suite ([`tests/`](tests/)):** Wrote 35 unit tests validating data loading, feature shapes, metric invariants, and model export schemas.
+  - **Exported Figures:** [`reports/figures/eda/`](reports/figures/eda/) (`class_balance.png`, `pixel_intensity_distribution.png`, `class_mean_and_variance.png`, `variety_grid.png`, `pca_2d_projection.png`).
+
+#### 2. Kartik Mehra ([`KartikMehra22`](https://github.com/KartikMehra22)) — Feature Extraction, HOG Engine & Feature Exploration
+- **Role:** Feature Pipeline Engineer, Milestone 2 Lead.
+- **Core Engineering & Deliverables:**
+  - **Feature Extraction Engine ([`src/aml/features.py`](src/aml/features.py)):**
+    - Raw Pixels: Flattened $(N, 28, 28)$ images into $(N, 784)$ float32 vectors.
+    - Histogram of Oriented Gradients (HOG): Implemented scikit-image HOG extraction with 9 orientation bins, $7 \times 7$ pixels per cell, and $2 \times 2$ cells per block (L2-Hys block normalization), yielding compact 324-dimensional feature vectors.
+    - Caching Utility: Built `get_features()` with offline `.npz` storage and the `precompute_and_cache_all()` CLI script to eliminate redundant feature extraction across teammates.
+  - **Feature Exploration ([`notebooks/02_feature_exploration.ipynb`](notebooks/02_feature_exploration.ipynb)):**
+    - Visualized HOG gradient arrow overlays across all 10 garment categories.
+    - Investigated upper-body silhouette ambiguity, illustrating why $7 \times 7$ cell pooling smooths away fine spatial cues (collar tips, buttons, seams).
+    - Produced polar orientation profiles demonstrating sharp directional peaks for structured items (trousers at 90°, shoes at 0°/180°) vs. isotropic diffuse energy for shirts and tops.
+    - Added automated assertions validating feature shapes and non-negativity.
+  - **Exported Figures:** [`reports/figures/features/`](reports/figures/features/) (`hog_class_examples.png`, `upper_body_hog_comparison.png`, `hog_orientation_profiles.png`).
+
+#### 3. Krishna Gehlot ([`NSTKrishna`](https://github.com/NSTKrishna)) — Model 1: Logistic Regression & Weight Heatmaps
+- **Role:** Linear Baseline Modeling Engineer, Milestone 3.
+- **Core Engineering & Deliverables:**
+  - **Model Architecture & Tuning ([`src/aml/models/logreg.py`](src/aml/models/logreg.py)):**
+    - Constructed `StandardScaler` + multinomial `LogisticRegression` pipeline using L-BFGS solver with `max_iter=2000` to guarantee complete convergence.
+    - Built hyperparameter tuning grid across inverse regularization strength $C \in \{0.1, 1.0, 10.0\}$ selecting best model by validation Macro F1.
+    - Standardized evaluation functions for refitting on all 60,000 training images and testing on the held-out test set.
+  - **Experimentation & Interpretability ([`notebooks/03_logistic_regression.ipynb`](notebooks/03_logistic_regression.ipynb)):**
+    - Evaluated Raw Pixels ($C=1.0$: Val F1 85.34%, Test Accuracy 84.32%, Macro F1 84.24%) and HOG ($C=1.0$: Val F1 85.16%, Test Accuracy 84.55%, Macro F1 84.49%).
+    - Unpacked linear decision boundaries by reshaping learned multiclass weight coefficients back into $28 \times 28$ spatial heatmaps for all 10 classes, revealing positive weights on silhouettes and negative weights on conflicting boundaries (e.g., negative collar zone for crewneck T-shirts).
+  - **Exported Deliverables:** [`reports/results/logreg_pixels.json`](reports/results/logreg_pixels.json), [`reports/results/logreg_hog.json`](reports/results/logreg_hog.json), and [`reports/figures/logreg/`](reports/figures/logreg/) (`pixel_weight_heatmaps.png`, `per_class_recall.png`).
+
+#### 4. Vipul Sharma ([`vs-code06`](https://github.com/vs-code06)) — Model 2: $k$-Nearest Neighbors & Latency/Memory Scaling Analysis
+- **Role:** Non-Parametric Modeling Engineer, Milestone 3.
+- **Core Engineering & Deliverables:**
+  - **Model Architecture & Batching ([`src/aml/models/knn.py`](src/aml/models/knn.py)):**
+    - Built `KNeighborsClassifier` pipeline with Euclidean distance and brute-force search.
+    - Implemented chunked matrix inference (`predict_in_batches`, batch size 500) preventing RAM exhaustion during distance calculation across 48k/60k images.
+    - Grid-searched neighborhood size $k \in \{3, 5, 7, 9\}$ and distance-inverse weighting (`uniform` vs. `distance`).
+  - **Computational Scaling & Latency Study ([`notebooks/04_knn_experiments.ipynb`](notebooks/04_knn_experiments.ipynb)):**
+    - Evaluated Raw Pixels ($k=5$, distance: Val F1 85.67%, Test Accuracy 85.41%, Macro F1 85.40%) and HOG ($k=9$, distance: Val F1 84.75%, Test Accuracy 83.84%, Macro F1 83.85%).
+    - Conducted comprehensive latency and throughput profiling, demonstrating that dimensionality reduction via HOG yields a **64.2% reduction in prediction latency** (0.098 ms vs. 0.274 ms/image).
+    - Quantified non-parametric memory footprint: Storing 60,000 raw training vectors requires **179.44 MiB** vs. **74.16 MiB** for HOG (58.7% memory savings).
+    - Analyzed production trade-offs and viability for real-time inventory catalog tagging.
+  - **Exported Deliverables:** [`reports/results/knn_pixels.json`](reports/results/knn_pixels.json), [`reports/results/knn_hog.json`](reports/results/knn_hog.json), and [`reports/figures/knn/`](reports/figures/knn/) (`knn_tuning_comparison.png`, `latency_comparison.png`, `per_class_recall.png`, `confusion_matrix.png`).
+
+#### 5. Aditya ([`AdityaInnovates`](https://github.com/AdityaInnovates)) — Model 3: Random Forest Classifier, Overfitting & Feature Importance
+- **Role:** Tree Ensemble Modeling Engineer, Milestone 3.
+- **Core Engineering & Deliverables:**
+  - **Model Architecture ([`src/aml/models/random_forest.py`](src/aml/models/random_forest.py)):**
+    - Implemented multi-threaded `RandomForestClassifier` with `n_jobs=-1` and reproducible seed control.
+    - Implemented 2D grid search across `n_estimators` $\in \{50, 100, 200\}$ and `max_depth` $\in \{10, 20, \text{None}\}$.
+    - Formulated dual-split scoring (training and validation) to explicitly track generalization error and tree growth dynamics.
+  - **Overfitting & Feature Importance Analysis ([`notebooks/05_random_forest.ipynb`](notebooks/05_random_forest.ipynb)):**
+    - Achieved Phase 1's highest overall test accuracy: Raw Pixels (200 trees, depth 20: Val F1 88.45%, **Test Accuracy 87.43%**, **Test Macro F1 87.31%**) and HOG (200 trees, unconstrained depth: Val F1 84.91%, Test Accuracy 84.35%, Test Macro F1 84.30%).
+    - Proved that unconstrained depth (`max_depth=None`) causes complete training split memorization (100% training accuracy with 1.7M–2.5M nodes) while validation F1 plateaus, proving `max_depth=20` as an optimal regularizer.
+    - Analyzed Gini feature importance: mapped pixel importances back to $28 \times 28$ image space to reveal decision boundaries focused on silhouette borders, shoulder slopes, and hems.
+  - **Exported Deliverables:** [`reports/results/rf_pixels.json`](reports/results/rf_pixels.json), [`reports/results/rf_hog.json`](reports/results/rf_hog.json), and [`reports/figures/rf/`](reports/figures/rf/) (`overfitting_curves.png`, `pixel_importance_heatmap.png`, `hog_importance.png`).
+
+#### 6. Utkarsh Jain ([`UJ474`](https://github.com/UJ474)) — Model 4: Support Vector Machine (Linear SVM) & Garment Error Analysis
+- **Role:** Maximum Margin Modeling Engineer, Lead Error Analyst, Milestone 3 & Milestone 4.
+- **Core Engineering & Deliverables:**
+  - **Linear SVM Pipeline ([`src/aml/models/svm.py`](src/aml/models/svm.py)):**
+    - Implemented `StandardScaler(with_mean=False)` + `LinearSVC` with automatic dual solver selection (`dual='auto'`).
+    - Grid-searched penalty parameter $C \in \{0.1, 1.0, 10.0\}$ selecting best candidate by validation Macro F1.
+    - Validated fastest inference across all models: **0.0006–0.0013 ms/image** (over 200x faster than $k$-NN).
+  - **Error Analysis Toolkit ([`src/aml/error_analysis.py`](src/aml/error_analysis.py)):**
+    - Implemented full-row normalized confusion matrix visualization.
+    - Implemented focused upper-body submatrices (classes 0, 2, 4, 6) preserving overall prediction distribution.
+    - Built misclassification gallery extractors for paired error analysis.
+  - **Experimentation ([`notebooks/06_svm_and_error_analysis.ipynb`](notebooks/06_svm_and_error_analysis.ipynb)):**
+    - Evaluated Raw Pixels ($C=0.1$: Val F1 85.57%, Test Accuracy 83.80%, Macro F1 83.57%) and HOG ($C=0.1$: Val F1 85.06%, Test Accuracy 84.23%, Macro F1 84.06%).
+    - Generated visual misclassification galleries identifying where collars and textures are lost at $28 \times 28$ resolution.
+  - **Academic Synthesis Report ([`reports/error_analysis.md`](reports/error_analysis.md)):**
+    - Authored the core Phase 1 synthesis report documenting "The Gap": the ~35% recall deficit for Shirt and 32%–41% upper-body directional confusion across all 4 model families.
+    - Articulated the mathematical limits of linear hyperplanes, axis-aligned splits, and Euclidean distance on flattened pixels and fixed HOG bins.
+    - Formulated the inductive biases and auditable success criteria for the Phase 2 Small CNN.
+  - **Exported Deliverables:** [`reports/results/svm_pixels.json`](reports/results/svm_pixels.json), [`reports/results/svm_hog.json`](reports/results/svm_hog.json), and [`reports/figures/errors/`](reports/figures/errors/) (`svm_pixels_confusion_matrix.png`, `svm_pixels_upper_body_confusion.png`, `svm_pixels_6_as_0_gallery.png`, `svm_pixels_2_as_4_gallery.png`).
+
+---
+
+For comprehensive technical rules, team coordination protocols, and branch policies, see [**`docs/team/README.md`**](docs/team/README.md).
 
 ---
 
