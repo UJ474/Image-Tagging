@@ -25,7 +25,7 @@
     0.954
   ],
   "parameter_count": 3250,
-  "inference_latency_ms_per_image": 0.00035016704350709915,
+  "inference_latency_ms_per_image": 0.00037337501998990774,
   "test_confusion_matrix": [
     [
       806,
