@@ -52,11 +52,11 @@ Every team member owns distinct, non-overlapping files:
 
 | Order | Member | GitHub Handle | Phase 2 Responsibilities | Owned Files |
 |:---:|:---|:---|:---|:---|
-| **1st** | **Anant Jain** | `@anantjain-afk` | PyTorch Data Pipeline, Loaders & Foundation Setup | `requirements.txt`, `src/aml/dl_data.py` |
-| **1st** | **Kartik Mehra** | `@KartikMehra22` | Training Loop, Optimization & Early Stopping | `src/aml/dl_training.py` |
-| **2nd** | **Vipul Sharma** | `@vs-code06` | CNN Architectures, Unit Tests, Ablation Study & Presentation | `src/aml/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
+| **1st** | **Anant Jain** | `@anantjain-afk` | PyTorch Data Pipeline, Loaders & Foundation Setup | `requirements.txt`, `src/dl/data.py` |
+| **1st** | **Kartik Mehra** | `@KartikMehra22` | Training Loop, Optimization & Early Stopping | `src/dl/training.py` |
+| **2nd** | **Vipul Sharma** | `@vs-code06` | CNN Architectures, Unit Tests, Ablation Study & Presentation | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
 | **3rd** | **Krishna Gehlot** | `@NSTKrishna` | SimpleCNN vs DeepCNN Training & Benchmark | `notebooks/07_cnn_experiments.ipynb`, `reports/results/cnn_simple.json`, `reports/results/cnn_deep.json`, `reports/figures/cnn/training_curves_*.png` |
-| **3rd** | **Aditya** | `@AdityaInnovates` | Pretrained RegNet-Y-400MF Transfer Learning | `src/aml/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json`, `reports/figures/cnn/regnet_*.png` |
+| **3rd** | **Aditya** | `@AdityaInnovates` | Pretrained RegNet-Y-400MF Transfer Learning | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json`, `reports/figures/cnn/regnet_*.png` |
 | **4th** | **Utkarsh Jain** | `@UJ474` | AML vs CNN Error Analysis & IEEE LaTeX Report | `reports/phase2_error_analysis.md`, `reports/figures/cnn/aml_vs_cnn_*.png`, `report/*` |
 
 ---
@@ -69,11 +69,11 @@ Every team member owns distinct, non-overlapping files:
 **Role:** Data Pipeline, Preprocessing & Foundation  
 **Owned Files:**
 - `requirements.txt` (Adds PyTorch dependencies)
-- `src/aml/dl_data.py` (PyTorch Dataset and DataLoader wrappers)
+- `src/dl/data.py` (PyTorch Dataset and DataLoader wrappers)
 
 #### Tasks:
 1. Update `requirements.txt` with `torch>=2.0.0`, `torchvision>=0.15.0`, and `torchinfo>=1.8.0`.
-2. Implement `FashionMNISTDataset(torch.utils.data.Dataset)` in `src/aml/dl_data.py` wrapping normalized arrays from `get_train_val_test_splits()`.
+2. Implement `FashionMNISTDataset(torch.utils.data.Dataset)` in `src/dl/data.py` wrapping normalized arrays from `get_train_val_test_splits()`.
 3. Add single-channel dimension: `(N, 1, 28, 28)`.
 4. Add training data augmentation: `RandomHorizontalFlip(p=0.5)` and `RandomRotation(degrees=10)`.
 5. Implement `get_dataloaders(batch_size=128)` returning train, validation, and test loaders.
@@ -84,7 +84,7 @@ Every team member owns distinct, non-overlapping files:
 ### Member 2: Kartik Mehra (`@KartikMehra22`)
 **Role:** Training Engine, Optimization & Early Stopping  
 **Owned Files:**
-- `src/aml/dl_training.py` (Reusable training and evaluation loops)
+- `src/dl/training.py` (Reusable training and evaluation loops)
 
 #### Tasks:
 1. Implement `EarlyStopping(patience=5, mode='max')` tracking validation Macro F1 to stop training when validation performance plateaus.
@@ -98,14 +98,14 @@ Every team member owns distinct, non-overlapping files:
 ### Member 3: Vipul Sharma (`@vs-code06`)
 **Role:** CNN Model Architecture, Unit Testing, Ablation Study & Presentation Deck  
 **Owned Files:**
-- `src/aml/models/cnn.py` (SimpleCNN and DeepCNN model architectures)
+- `src/dl/models/cnn.py` (SimpleCNN and DeepCNN model architectures)
 - `tests/test_cnn.py` (Unit tests verifying forward pass, output shapes, and gradient flow)
 - `notebooks/08_ablation_study.ipynb` (5-variable controlled ablation notebook)
 - `reports/results/ablation_study.json` (Ablation metric records)
 - `reports/phase2_presentation.pptx` (Phase 2 presentation deck)
 
 #### Tasks:
-1. **Model Architectures (`src/aml/models/cnn.py`):**
+1. **Model Architectures (`src/dl/models/cnn.py`):**
    - **`SimpleCNN` (2-Block CNN):**
      - Block 1: `Conv2d(1, 32, 3, padding=1)` $\rightarrow$ `BatchNorm2d(32)` $\rightarrow$ `ReLU` $\rightarrow$ `MaxPool2d(2)` ($14 \times 14$) $\rightarrow$ `Dropout2d(0.25)`.
      - Block 2: `Conv2d(32, 64, 3, padding=1)` $\rightarrow$ `BatchNorm2d(64)` $\rightarrow$ `ReLU` $\rightarrow$ `MaxPool2d(2)` ($7 \times 7$) $\rightarrow$ `Dropout2d(0.25)`.
@@ -142,8 +142,8 @@ Every team member owns distinct, non-overlapping files:
 - `reports/figures/cnn/confusion_matrix_deep.png`
 
 #### Tasks:
-1. In `notebooks/07_cnn_experiments.ipynb`, import `SimpleCNN` and `DeepCNN` from `src/aml/models/cnn.py`.
-2. Train both models using `fit_model()` from `src/aml/dl_training.py` with early stopping.
+1. In `notebooks/07_cnn_experiments.ipynb`, import `SimpleCNN` and `DeepCNN` from `src/dl/models/cnn.py`.
+2. Train both models using `fit_model()` from `src/dl/training.py` with early stopping.
 3. Plot training vs. validation loss and Macro F1 curves across epochs.
 4. Evaluate both trained models on the held-out 10k test set.
 5. Generate the normalized $10 \times 10$ test confusion matrix for `DeepCNN`.
@@ -155,13 +155,13 @@ Every team member owns distinct, non-overlapping files:
 ### Member 5: Aditya (`@AdityaInnovates`)
 **Role:** Hybrid Innovation: Pretrained RegNet Transfer Learning  
 **Owned Files:**
-- `src/aml/models/regnet.py`
+- `src/dl/models/regnet.py`
 - `notebooks/09_regnet_transfer_learning.ipynb`
 - `reports/results/regnet_finetuned.json`
 - `reports/figures/cnn/regnet_finetuning_curves.png`
 
 #### Tasks:
-1. In `src/aml/models/regnet.py`, adapt `torchvision.models.regnet_y_400mf`:
+1. In `src/dl/models/regnet.py`, adapt `torchvision.models.regnet_y_400mf`:
    - Adapt stem convolution from 3 channels to 1 channel (averaging pretrained RGB weights).
    - Replace linear classifier head with `Linear(440, 10)`.
 2. In `notebooks/09_regnet_transfer_learning.ipynb`:
@@ -198,14 +198,14 @@ Every team member owns distinct, non-overlapping files:
 
 | Required Deliverable | Primary Owner(s) | Primary Location / Output |
 |:---|:---|:---|
-| **1. Architecture Logic** | Vipul Sharma | `src/aml/models/cnn.py`, `tests/test_cnn.py` |
-| **2. Hybrid Innovation** | Aditya | `src/aml/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb` |
+| **1. Architecture Logic** | Vipul Sharma | `src/dl/models/cnn.py`, `tests/test_cnn.py` |
+| **2. Hybrid Innovation** | Aditya | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb` |
 | **3. Ablation Studies** | Vipul Sharma | `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json` |
 | **4. DL Literature Review** | Utkarsh Jain & Team | Section 3 of `report/main.tex`, `report/references.bib` |
-| **5. DL Dataset & Regularization** | Anant Jain & Kartik Mehra | `src/aml/dl_data.py`, `src/aml/dl_training.py` |
+| **5. DL Dataset & Regularization** | Anant Jain & Kartik Mehra | `src/dl/data.py`, `src/dl/training.py` |
 | **6. Technical Validation** | Krishna Gehlot | `notebooks/07_cnn_experiments.ipynb`, test confusion matrices |
 | **7. Theoretical Rigor** | Team | Documented in `reports/phase2_error_analysis.md` and report |
-| **8. GitHub Code Quality** | All Members | Clean commit logs, modular `src/aml/`, unit tests |
+| **8. GitHub Code Quality** | All Members | Clean commit logs, modular `src/dl/`, unit tests |
 | **9. Project Presentation** | Vipul Sharma | `reports/phase2_presentation.pptx` |
 | **10. Viva Voce Preparation** | All Members | Common Q&A prep guide in `phase2_plan.md` |
 | **11. Project Report** | Utkarsh Jain & Team | `report/main.tex` (IEEE Two-Column format) |

@@ -196,16 +196,26 @@ New files to create (keeping Phase 1 intact):
 Image-Tagging/
 ├── requirements.txt                    ← ADD: torch, torchvision, torchinfo
 │
-├── src/aml/
-│   ├── models/
-│   │   ├── cnn.py                      ← NEW: SimpleCNN, DeepCNN classes
-│   │   └── regnet.py                   ← NEW: RegNet fine-tuning wrapper
-│   ├── dl_training.py                  ← NEW: train loop, early stopping, LR scheduler
-│   └── dl_data.py                      ← NEW: PyTorch Dataset/DataLoader wrappers
+├── src/
+│   ├── aml/                            ← Phase 1: Applied ML (Untouched)
+│   │   ├── data.py
+│   │   ├── evaluation.py
+│   │   ├── features.py
+│   │   └── models/ (logreg, knn, rf, svm)
+│   │
+│   └── dl/                             ← Phase 2: Deep Learning Package
+│       ├── __init__.py
+│       ├── data.py                     ← NEW: PyTorch Dataset, DataLoaders, transforms
+│       ├── training.py                 ← NEW: train loop, evaluation, early stopping, LR scheduler
+│       └── models/
+│           ├── __init__.py
+│           ├── cnn.py                  ← NEW: SimpleCNN, DeepCNN classes
+│           └── regnet.py               ← NEW: RegNet fine-tuning wrapper
 │
 ├── notebooks/
 │   ├── 07_cnn_experiments.ipynb        ← NEW: Main Phase 2 notebook (THE deliverable)
-│   └── 08_ablation_study.ipynb         ← NEW: Ablation runs and comparison
+│   ├── 08_ablation_study.ipynb         ← NEW: Ablation runs and comparison
+│   └── 09_regnet_transfer_learning.ipynb ← NEW: Pretrained RegNet fine-tuning
 │
 ├── tests/
 │   └── test_cnn.py                     ← NEW: Unit tests for CNN forward pass, shapes
@@ -221,8 +231,7 @@ Image-Tagging/
 │   └── phase2_error_analysis.md        ← NEW: AML vs CNN error comparison
 │
 ├── docs/team/
-│   ├── 07_Phase2_CNN_Guide.md          ← NEW: Team guide for Phase 2 work
-│   └── README_phase2.md               ← NEW: Phase 2 master guide
+│   └── phase2_team_guide.md            ← NEW: Team guide for Phase 2 work
 │
 └── report/                             ← NEW: LaTeX report directory
     ├── main.tex
@@ -238,11 +247,11 @@ Each team member owns distinct, non-overlapping modules and notebooks to prevent
 
 | Member | Phase 2 Ownership | Files |
 |:-------|:-------------------|:------|
-| **Anant Jain** | PyTorch Dataset & data loader pipeline (`dl_data.py`), master PR merge | `src/aml/dl_data.py` |
-| **Kartik Mehra** | Training loop, optimization & early stopping engine (`dl_training.py`) | `src/aml/dl_training.py` |
-| **Vipul Sharma** | Core CNN model architectures (`cnn.py`), unit testing (`test_cnn.py`), 5-variable ablation study (`08_ablation_study.ipynb`), and Phase 2 presentation deck (`phase2_presentation.pptx`) | `src/aml/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
+| **Anant Jain** | PyTorch Dataset & data loader pipeline (`data.py`), master PR merge | `src/dl/data.py` |
+| **Kartik Mehra** | Training loop, optimization & early stopping engine (`training.py`) | `src/dl/training.py` |
+| **Vipul Sharma** | Core CNN model architectures (`cnn.py`), unit testing (`test_cnn.py`), 5-variable ablation study (`08_ablation_study.ipynb`), and Phase 2 presentation deck (`phase2_presentation.pptx`) | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
 | **Krishna Gehlot** | CNN training benchmark notebook (07), training curves, confusion matrices | `notebooks/07_cnn_experiments.ipynb`, `reports/results/cnn_*.json` |
-| **Aditya** | RegNet-Y-400MF transfer learning model + training, fine-tuning results | `src/aml/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json` |
+| **Aditya** | RegNet-Y-400MF transfer learning model + training, fine-tuning results | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json` |
 | **Utkarsh Jain** | Phase 2 error analysis (AML vs CNN examples, Shirt recovery gallery), IEEE LaTeX report draft | `reports/phase2_error_analysis.md`, `report/main.tex` |
 
 > [!NOTE]
