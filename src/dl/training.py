@@ -252,3 +252,173 @@ def evaluate_model(
 
 
 # ---------------------------------------------------------------------------
+# 4. Full Training Loop (fit_model)
+# ---------------------------------------------------------------------------
+
+def fit_model(
+    model: nn.Module,
+    train_loader: DataLoader,
+    val_loader: DataLoader,
+    epochs: int = 30,
+    lr: float = 1e-3,
+    weight_decay: float = 1e-4,
+    patience: int = 5,
+    lr_scheduler_factor: float = 0.5,
+    lr_scheduler_patience: int = 3,
+    device: Optional[torch.device] = None,
+    verbose: bool = True,
+) -> dict:
+    """Train a CNN with Adam, ReduceLROnPlateau, and early stopping.
+
+    Training Strategy
+    -----------------
+    - Optimizer : Adam(lr=lr, weight_decay=weight_decay)
+    - LR Scheduler: ReduceLROnPlateau monitoring val Macro F1.
+      Halves the LR if no improvement for `lr_scheduler_patience` epochs.
+    - Early Stopping: Halts when val Macro F1 fails to improve for
+      `patience` consecutive epochs; best weights are automatically restored.
+
+    Parameters
+    ----------
+    model : nn.Module
+        Untrained or partially trained CNN. Modified in place and returned.
+    train_loader : DataLoader
+        Shuffled training loader (with augmentation).
+    val_loader : DataLoader
+        Unshuffled validation loader (no augmentation).
+    epochs : int
+        Maximum number of training epochs (teacher requires 30 max).
+    lr : float
+        Initial Adam learning rate. Default 1e-3 for SimpleCNN / DeepCNN.
+    weight_decay : float
+        L2 regularization coefficient in Adam. Default 1e-4.
+    patience : int
+        Early stopping patience in epochs. Teacher requirement: 5.
+    lr_scheduler_factor : float
+        Multiplicative reduction factor for ReduceLROnPlateau. Default 0.5.
+    lr_scheduler_patience : int
+        Epochs without improvement before LR is reduced. Default 3.
+    device : torch.device or None
+        Target device. Auto-detected (cuda → mps → cpu) if None.
+    verbose : bool
+        Print per-epoch summary to stdout when True.
+
+    Returns
+    -------
+    history : dict
+        Contains:
+        - 'train_loss'      : list[float] — per-epoch mean training loss
+        - 'train_accuracy'  : list[float] — per-epoch training accuracy
+        - 'val_accuracy'    : list[float] — per-epoch validation accuracy
+        - 'val_macro_f1'    : list[float] — per-epoch validation Macro F1
+        - 'best_epoch'      : int         — epoch with best val Macro F1 (0-based)
+        - 'best_val_macro_f1': float      — best validation Macro F1 achieved
+        - 'stopped_early'   : bool        — True if training ended by early stopping
+        - 'total_seconds'   : float       — wall-clock training time
+    """
+    # --- Device selection ---
+    if device is None:
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            device = torch.device("mps")
+        else:
+            device = torch.device("cpu")
+
+    model = model.to(device)
+
+    if verbose:
+        print(f"Training on device: {device}")
+
+    # --- Optimizer, loss, scheduler, early stopping ---
+    criterion = nn.CrossEntropyLoss()
+    optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+
+    # ReduceLROnPlateau in 'max' mode: reduce LR when val F1 stops rising.
+    scheduler = ReduceLROnPlateau(
+        optimizer,
+        mode="max",
+        factor=lr_scheduler_factor,
+        patience=lr_scheduler_patience,
+    )
+
+    early_stopping = EarlyStopping(patience=patience, mode="max")
+
+    # --- History tracking ---
+    history: dict = {
+        "train_loss": [],
+        "train_accuracy": [],
+        "val_accuracy": [],
+        "val_macro_f1": [],
+        "best_epoch": 0,
+        "best_val_macro_f1": 0.0,
+        "stopped_early": False,
+        "total_seconds": 0.0,
+    }
+
+    t_start = time.perf_counter()
+
+    for epoch in range(epochs):
+        # 1. Training pass
+        train_loss, train_acc = train_epoch(
+            model, train_loader, criterion, optimizer, device
+        )
+
+        # 2. Validation pass
+        val_metrics = evaluate_model(model, val_loader, device)
+        val_acc = val_metrics["accuracy"]
+        val_f1 = val_metrics["macro_f1"]
+
+        # 3. Record
+        history["train_loss"].append(train_loss)
+        history["train_accuracy"].append(train_acc)
+        history["val_accuracy"].append(val_acc)
+        history["val_macro_f1"].append(val_f1)
+
+        # 4. LR scheduling (monitor val Macro F1)
+        scheduler.step(val_f1)
+
+        # 5. Early stopping check
+        early_stopping(val_f1, model)
+
+        if verbose:
+            current_lr = optimizer.param_groups[0]["lr"]
+            print(
+                f"Epoch {epoch + 1:3d}/{epochs} | "
+                f"Loss: {train_loss:.4f} | "
+                f"Train Acc: {train_acc:.4f} | "
+                f"Val Acc: {val_acc:.4f} | "
+                f"Val F1: {val_f1:.4f} | "
+                f"LR: {current_lr:.6f}"
+                + (" ← best" if early_stopping.counter == 0 else "")
+            )
+
+        if early_stopping.early_stop:
+            if verbose:
+                print(
+                    f"\nEarly stopping triggered at epoch {epoch + 1}. "
+                    f"Best epoch: {early_stopping.best_epoch + 1} "
+                    f"(Val Macro F1 = {early_stopping.best_score:.4f})"
+                )
+            history["stopped_early"] = True
+            break
+
+    # 6. Restore best weights before returning
+    early_stopping.restore_best_weights(model)
+
+    history["best_epoch"] = early_stopping.best_epoch
+    history["best_val_macro_f1"] = early_stopping.best_score or 0.0
+    history["total_seconds"] = time.perf_counter() - t_start
+
+    if verbose:
+        print(
+            f"\nTraining complete. "
+            f"Best Val Macro F1: {history['best_val_macro_f1']:.4f} "
+            f"at epoch {history['best_epoch'] + 1}. "
+            f"Total time: {history['total_seconds']:.1f}s"
+        )
+
+    return history
+
+
+# ---------------------------------------------------------------------------
