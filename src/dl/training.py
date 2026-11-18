@@ -422,3 +422,58 @@ def fit_model(
 
 
 # ---------------------------------------------------------------------------
+# 5. Result Record Builder (matches Phase 1 JSON schema)
+# ---------------------------------------------------------------------------
+
+def make_result_record(
+    model_name: str,
+    test_metrics: dict,
+    history: dict,
+    best_params: dict,
+    train_n: int,
+    val_n: int,
+    test_n: int,
+    inference_latency_ms: float,
+    parameter_count: int,
+) -> dict:
+    """Assemble a Phase-2 JSON result record matching the Phase-1 schema.
+
+    Parameters
+    ----------
+    model_name : str
+        One of 'cnn_simple', 'cnn_deep', or 'regnet_finetuned'.
+    test_metrics : dict
+        Output of evaluate_model() on the held-out test set.
+    history : dict
+        Output of fit_model() (training curves and best epoch info).
+    best_params : dict
+        Hyperparameters used (lr, batch_size, epochs_trained, etc.).
+    train_n, val_n, test_n : int
+        Dataset split sizes (48000, 12000, 10000 for Fashion-MNIST).
+    inference_latency_ms : float
+        Median per-image inference time in milliseconds on the test set.
+    parameter_count : int
+        Total trainable parameters in the model.
+
+    Returns
+    -------
+    record : dict
+        JSON-serializable dict ready to write as a .json file.
+    """
+    return {
+        "model": model_name,
+        "best_params": best_params,
+        "train_n": int(train_n),
+        "val_n": int(val_n),
+        "test_n": int(test_n),
+        "best_epoch": int(history["best_epoch"]) + 1,
+        "best_val_macro_f1": float(history["best_val_macro_f1"]),
+        "stopped_early": bool(history["stopped_early"]),
+        "total_training_seconds": float(history["total_seconds"]),
+        "test_accuracy": float(test_metrics["accuracy"]),
+        "test_macro_f1": float(test_metrics["macro_f1"]),
+        "per_class_recall": [float(r) for r in test_metrics["per_class_recall"]],
+        "parameter_count": int(parameter_count),
+        "inference_latency_ms_per_image": float(inference_latency_ms),
+        "test_confusion_matrix": test_metrics["confusion_matrix"],
+    }
