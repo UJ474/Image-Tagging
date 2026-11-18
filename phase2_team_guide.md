@@ -54,10 +54,10 @@ Every team member owns distinct, non-overlapping files:
 |:---:|:---|:---|:---|:---|
 | **1st** | **Anant Jain** | `@anantjain-afk` | PyTorch Data Pipeline, Loaders & Foundation Setup | `requirements.txt`, `src/dl/data.py` |
 | **1st** | **Kartik Mehra** | `@KartikMehra22` | Training Loop, Optimization & Early Stopping | `src/dl/training.py` |
-| **2nd** | **Vipul Sharma** | `@vs-code06` | CNN Architectures, Unit Tests, Ablation Study & Presentation | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
-| **3rd** | **Krishna Gehlot** | `@NSTKrishna` | SimpleCNN vs DeepCNN Training & Benchmark | `notebooks/07_cnn_experiments.ipynb`, `reports/results/cnn_simple.json`, `reports/results/cnn_deep.json`, `reports/figures/cnn/training_curves_*.png` |
-| **3rd** | **Aditya** | `@AdityaInnovates` | Pretrained RegNet-Y-400MF Transfer Learning | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json`, `reports/figures/cnn/regnet_*.png` |
-| **4th** | **Utkarsh Jain** | `@UJ474` | AML vs CNN Error Analysis & IEEE LaTeX Report | `reports/phase2_error_analysis.md`, `reports/figures/cnn/aml_vs_cnn_*.png`, `report/*` |
+| **2nd** | **Vipul Sharma** | `@vs-code06` | CNN Architectures, Unit Tests, Ablation Study & Presentation | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `phase2_reports/results/ablation_study.json`, `phase2_reports/phase2_presentation.pptx` |
+| **3rd** | **Krishna Gehlot** | `@NSTKrishna` | SimpleCNN vs DeepCNN Training & Benchmark | `notebooks/07_cnn_experiments.ipynb`, `phase2_reports/results/cnn_simple.json`, `phase2_reports/results/cnn_deep.json`, `phase2_reports/figures/training_curves_*.png` |
+| **3rd** | **Aditya** | `@AdityaInnovates` | Pretrained RegNet-Y-400MF Transfer Learning | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `phase2_reports/results/regnet_finetuned.json`, `phase2_reports/figures/regnet_*.png` |
+| **4th** | **Utkarsh Jain** | `@UJ474` | AML vs CNN Error Analysis & IEEE LaTeX Report | `phase2_reports/phase2_error_analysis.md`, `phase2_reports/figures/aml_vs_cnn_*.png`, `phase2_reports/latex_report/*` |
 
 ---
 
@@ -101,8 +101,8 @@ Every team member owns distinct, non-overlapping files:
 - `src/dl/models/cnn.py` (SimpleCNN and DeepCNN model architectures)
 - `tests/test_cnn.py` (Unit tests verifying forward pass, output shapes, and gradient flow)
 - `notebooks/08_ablation_study.ipynb` (5-variable controlled ablation notebook)
-- `reports/results/ablation_study.json` (Ablation metric records)
-- `reports/phase2_presentation.pptx` (Phase 2 presentation deck)
+- `phase2_reports/results/ablation_study.json` (Ablation metric records)
+- `phase2_reports/phase2_presentation.pptx` (Phase 2 presentation deck)
 
 #### Tasks:
 1. **Model Architectures (`src/dl/models/cnn.py`):**
@@ -124,8 +124,8 @@ Every team member owns distinct, non-overlapping files:
      3. No BatchNorm (examine training stability and convergence rate)
      4. No Data Augmentation (examine impact of spatial transformations)
      5. 2-Block vs. 3-Block Depth (isolate the benefit of the third convolutional layer on Shirt recall)
-   - Save comparison table and export `reports/results/ablation_study.json`.
-4. **Phase 2 Presentation (`reports/phase2_presentation.pptx`):**
+   - Save comparison table and export `phase2_reports/results/ablation_study.json`.
+4. **Phase 2 Presentation (`phase2_reports/phase2_presentation.pptx`):**
    - Build the slide deck covering Phase 2 motivation, network diagrams, training dynamics, AML vs. CNN benchmark comparisons, ablation findings, and error resolution.
 5. Commit and push directly to `main`.
 
@@ -135,11 +135,11 @@ Every team member owns distinct, non-overlapping files:
 **Role:** Main CNN Training, Benchmarking & Confusion Matrices  
 **Owned Files:**
 - `notebooks/07_cnn_experiments.ipynb`
-- `reports/results/cnn_simple.json`
-- `reports/results/cnn_deep.json`
-- `reports/figures/cnn/training_curves_simple.png`
-- `reports/figures/cnn/training_curves_deep.png`
-- `reports/figures/cnn/confusion_matrix_deep.png`
+- `phase2_reports/results/cnn_simple.json`
+- `phase2_reports/results/cnn_deep.json`
+- `phase2_reports/figures/training_curves_simple.png`
+- `phase2_reports/figures/training_curves_deep.png`
+- `phase2_reports/figures/confusion_matrix_deep.png`
 
 #### Tasks:
 1. In `notebooks/07_cnn_experiments.ipynb`, import `SimpleCNN` and `DeepCNN` from `src/dl/models/cnn.py`.
@@ -147,7 +147,7 @@ Every team member owns distinct, non-overlapping files:
 3. Plot training vs. validation loss and Macro F1 curves across epochs.
 4. Evaluate both trained models on the held-out 10k test set.
 5. Generate the normalized $10 \times 10$ test confusion matrix for `DeepCNN`.
-6. Export standardized metrics to `reports/results/cnn_simple.json` and `reports/results/cnn_deep.json`.
+6. Export standardized metrics to `phase2_reports/results/cnn_simple.json` and `phase2_reports/results/cnn_deep.json`.
 7. Commit and push directly to `main`.
 
 ---
@@ -157,8 +157,8 @@ Every team member owns distinct, non-overlapping files:
 **Owned Files:**
 - `src/dl/models/regnet.py`
 - `notebooks/09_regnet_transfer_learning.ipynb`
-- `reports/results/regnet_finetuned.json`
-- `reports/figures/cnn/regnet_finetuning_curves.png`
+- `phase2_reports/results/regnet_finetuned.json`
+- `phase2_reports/figures/regnet_finetuning_curves.png`
 
 #### Tasks:
 1. In `src/dl/models/regnet.py`, adapt `torchvision.models.regnet_y_400mf`:
@@ -167,7 +167,7 @@ Every team member owns distinct, non-overlapping files:
 2. In `notebooks/09_regnet_transfer_learning.ipynb`:
    - Stage 1: Freeze backbone, train classification head for 3 epochs.
    - Stage 2: Unfreeze entire network, fine-tune at lower learning rate ($lr = 10^{-4}$) with early stopping.
-3. Evaluate on held-out test set and export `reports/results/regnet_finetuned.json`.
+3. Evaluate on held-out test set and export `phase2_reports/results/regnet_finetuned.json`.
 4. Commit and push directly to `main`.
 
 ---
@@ -175,21 +175,21 @@ Every team member owns distinct, non-overlapping files:
 ### Member 6: Utkarsh Jain (`@UJ474`)
 **Role:** AML vs. CNN Error Analysis & IEEE LaTeX Report Draft  
 **Owned Files:**
-- `reports/phase2_error_analysis.md`
-- `reports/figures/cnn/aml_vs_cnn_confusion.png`
-- `reports/figures/cnn/shirt_recovery_gallery.png`
-- `report/main.tex` (IEEE Format Report)
-- `report/references.bib`
+- `phase2_reports/phase2_error_analysis.md`
+- `phase2_reports/figures/aml_vs_cnn_confusion.png`
+- `phase2_reports/figures/shirt_recovery_gallery.png`
+- `phase2_reports/latex_report/main.tex` (IEEE Format Report)
+- `phase2_reports/latex_report/references.bib`
 
 #### Tasks:
 1. Compare test predictions between Phase 1 best models (Random Forest, SVM) and Phase 2 CNN models.
-2. In `reports/phase2_error_analysis.md`, evaluate whether the upper-body bottleneck was resolved:
+2. In `phase2_reports/phase2_error_analysis.md`, evaluate whether the upper-body bottleneck was resolved:
    - Check if Shirt recall increased from 50.7%–62.6% to $\ge 80.0\%$.
    - Check if total upper-body shirt confusion decreased to $< 15.0\%$.
 3. Extract and visualize misclassification examples:
    - Create `shirt_recovery_gallery.png` showing garments where Phase 1 failed but CNN succeeded.
    - Analyze remaining failure cases.
-4. Set up the IEEE 2-column LaTeX report (`report/main.tex`) integrating Phase 1 and Phase 2 results.
+4. Set up the IEEE 2-column LaTeX report (`phase2_reports/latex_report/main.tex`) integrating Phase 1 and Phase 2 results.
 5. Commit and push directly to `main`.
 
 ---
@@ -200,15 +200,16 @@ Every team member owns distinct, non-overlapping files:
 |:---|:---|:---|
 | **1. Architecture Logic** | Vipul Sharma | `src/dl/models/cnn.py`, `tests/test_cnn.py` |
 | **2. Hybrid Innovation** | Aditya | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb` |
-| **3. Ablation Studies** | Vipul Sharma | `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json` |
-| **4. DL Literature Review** | Utkarsh Jain & Team | Section 3 of `report/main.tex`, `report/references.bib` |
+| **3. Ablation Studies** | Vipul Sharma | `notebooks/08_ablation_study.ipynb`, `phase2_reports/results/ablation_study.json` |
+| **4. DL Literature Review** | Utkarsh Jain & Team | Section 3 of `phase2_reports/latex_report/main.tex` |
 | **5. DL Dataset & Regularization** | Anant Jain & Kartik Mehra | `src/dl/data.py`, `src/dl/training.py` |
 | **6. Technical Validation** | Krishna Gehlot | `notebooks/07_cnn_experiments.ipynb`, test confusion matrices |
-| **7. Theoretical Rigor** | Team | Documented in `reports/phase2_error_analysis.md` and report |
+| **7. Theoretical Rigor** | Team | Documented in `phase2_reports/phase2_error_analysis.md` and report |
 | **8. GitHub Code Quality** | All Members | Clean commit logs, modular `src/dl/`, unit tests |
-| **9. Project Presentation** | Vipul Sharma | `reports/phase2_presentation.pptx` |
+| **9. Project Presentation** | Vipul Sharma | `phase2_reports/phase2_presentation.pptx` |
 | **10. Viva Voce Preparation** | All Members | Common Q&A prep guide in `phase2_plan.md` |
-| **11. Project Report** | Utkarsh Jain & Team | `report/main.tex` (IEEE Two-Column format) |
+| **11. Project Report** | Utkarsh Jain & Team | `phase2_reports/latex_report/main.tex` (IEEE Two-Column format) |
+| **12. Comprehensive README** | Team (at final merge) | Main root `README.md` updated to cover both Phase 1 and Phase 2 |
 
 ---
 

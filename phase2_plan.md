@@ -195,6 +195,9 @@ New files to create (keeping Phase 1 intact):
 ```
 Image-Tagging/
 ├── requirements.txt                    ← ADD: torch, torchvision, torchinfo
+├── README.md                           ← Main repo guide (will be updated at end to cover Phase 1 + 2)
+├── phase2_plan.md                      ← Phase 2 master plan
+├── phase2_team_guide.md                ← Team execution & file ownership guide
 │
 ├── src/
 │   ├── aml/                            ← Phase 1: Applied ML (Untouched)
@@ -220,23 +223,18 @@ Image-Tagging/
 ├── tests/
 │   └── test_cnn.py                     ← NEW: Unit tests for CNN forward pass, shapes
 │
-├── reports/
-│   ├── results/
-│   │   ├── cnn_simple.json             ← NEW: SimpleCNN results (same JSON schema)
-│   │   ├── cnn_deep.json               ← NEW: DeepCNN results
-│   │   └── regnet_finetuned.json       ← NEW: RegNet results
-│   ├── figures/
-│   │   └── cnn/                        ← NEW: training curves, confusion matrices, etc.
-│   ├── phase2_presentation.pptx        ← NEW: Phase 2 slides
-│   └── phase2_error_analysis.md        ← NEW: AML vs CNN error comparison
-│
-├── docs/team/
-│   └── phase2_team_guide.md            ← NEW: Team guide for Phase 2 work
-│
-└── report/                             ← NEW: LaTeX report directory
-    ├── main.tex
-    ├── references.bib
-    └── figures/                        ← Symlinked or copied from reports/figures/
+└── phase2_reports/                     ← NEW: All Phase 2 deliverables centralized in one place
+    ├── results/
+    │   ├── cnn_simple.json             ← NEW: SimpleCNN results (same JSON schema)
+    │   ├── cnn_deep.json               ← NEW: DeepCNN results
+    │   ├── regnet_finetuned.json       ← NEW: RegNet results
+    │   └── ablation_study.json         ← NEW: 5-variable ablation results
+    ├── figures/                        ← NEW: training curves, confusion matrices, shirt recovery gallery
+    ├── latex_report/                   ← NEW: IEEE LaTeX format report (no confusion with Phase 1 reports/)
+    │   ├── main.tex
+    │   └── references.bib
+    ├── phase2_presentation.pptx        ← NEW: Phase 2 slides
+    └── phase2_error_analysis.md        ← NEW: AML vs CNN error comparison
 ```
 
 ---
@@ -247,12 +245,12 @@ Each team member owns distinct, non-overlapping modules and notebooks to prevent
 
 | Member | Phase 2 Ownership | Files |
 |:-------|:-------------------|:------|
-| **Anant Jain** | PyTorch Dataset & data loader pipeline (`data.py`), master PR merge | `src/dl/data.py` |
+| **Anant Jain** | PyTorch Dataset & data loader pipeline (`data.py`), master direct push coordination | `src/dl/data.py` |
 | **Kartik Mehra** | Training loop, optimization & early stopping engine (`training.py`) | `src/dl/training.py` |
-| **Vipul Sharma** | Core CNN model architectures (`cnn.py`), unit testing (`test_cnn.py`), 5-variable ablation study (`08_ablation_study.ipynb`), and Phase 2 presentation deck (`phase2_presentation.pptx`) | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `reports/results/ablation_study.json`, `reports/phase2_presentation.pptx` |
-| **Krishna Gehlot** | CNN training benchmark notebook (07), training curves, confusion matrices | `notebooks/07_cnn_experiments.ipynb`, `reports/results/cnn_*.json` |
-| **Aditya** | RegNet-Y-400MF transfer learning model + training, fine-tuning results | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `reports/results/regnet_finetuned.json` |
-| **Utkarsh Jain** | Phase 2 error analysis (AML vs CNN examples, Shirt recovery gallery), IEEE LaTeX report draft | `reports/phase2_error_analysis.md`, `report/main.tex` |
+| **Vipul Sharma** | Core CNN model architectures (`cnn.py`), unit testing (`test_cnn.py`), 5-variable ablation study (`08_ablation_study.ipynb`), and Phase 2 presentation deck (`phase2_presentation.pptx`) | `src/dl/models/cnn.py`, `tests/test_cnn.py`, `notebooks/08_ablation_study.ipynb`, `phase2_reports/results/ablation_study.json`, `phase2_reports/phase2_presentation.pptx` |
+| **Krishna Gehlot** | CNN training benchmark notebook (07), training curves, confusion matrices | `notebooks/07_cnn_experiments.ipynb`, `phase2_reports/results/cnn_*.json` |
+| **Aditya** | RegNet-Y-400MF transfer learning model + training, fine-tuning results | `src/dl/models/regnet.py`, `notebooks/09_regnet_transfer_learning.ipynb`, `phase2_reports/results/regnet_finetuned.json` |
+| **Utkarsh Jain** | Phase 2 error analysis (AML vs CNN examples, Shirt recovery gallery), IEEE LaTeX report draft | `phase2_reports/phase2_error_analysis.md`, `phase2_reports/latex_report/main.tex` |
 
 > [!NOTE]
 > This division keeps the same parallel pattern as Phase 1. Everyone can work on their own files without merge conflicts.
