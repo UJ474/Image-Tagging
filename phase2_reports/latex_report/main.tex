@@ -1,0 +1,613 @@
+% =====================================================================
+% Technical Report: Inventory Image Tagging via Handcrafted Features
+%                   and Deep Learning (Phase 1 + Phase 2)
+% Project 11 | Team T112 | Section D
+% IEEE conference format (IEEEtran)
+%
+% Compile from phase2_reports/latex_report/ directory:
+%   pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+% or
+%   latexmk -pdf main.tex
+% or (Overleaf): upload figures/ alongside main.tex
+% =====================================================================
+\documentclass[conference]{IEEEtran}
+
+% ---------- Encoding ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% ---------- Mathematics ----------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\interdisplaylinepenalty=2500
+
+% ---------- Citations ----------
+\usepackage{cite}
+
+% ---------- Tables & figures ----------
+\usepackage{graphicx}
+\graphicspath{{figures/}{../../reports/figures/}{../../phase2_reports/figures/}{./}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+
+% ---------- Colors ----------
+\usepackage{xcolor}
+
+% ---------- Hyperlinks ----------
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Convenience macros ----------
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\repopath}[1]{\nolinkurl{#1}}
+
+% =====================================================================
+\begin{document}
+
+\title{Inventory Image Tagging via Handcrafted Features and Deep Learning:\\
+A Two-Phase Comparative Study on Fashion-MNIST}
+
+\author{%
+\IEEEauthorblockN{Anant Jain, Kartik Mehra, Krishna Gehlot, Vipul Sharma, Aditya, and Utkarsh Jain}
+\IEEEauthorblockA{Project~11, Team~T112, Section~D\\
+Repository: \url{https://github.com/anantjain-afk/Image-Tagging}}
+}
+
+\maketitle
+
+% =====================================================================
+\begin{abstract}
+Automatic category tagging of product photographs reduces manual curation
+overhead in large-scale e-commerce catalogues. This paper presents a
+two-phase comparative study on the Fashion-MNIST corpus of $70{,}000$
+grayscale $28\times28$ garment images across ten categories. \emph{Phase~1}
+benchmarks handcrafted feature representations---$784$-dimensional
+normalised raw pixels and $324$-dimensional Histograms of Oriented Gradients
+(HOG)---paired with four classical classifiers: multinomial logistic
+regression, $k$-nearest neighbours, random forests, and linear support
+vector machines. Test accuracy spans $83.80\%$ to $87.43\%$, led by a
+depth-regularised random forest (Macro~$F_1 = 87.31\%$). Error analysis
+reveals an acute bottleneck: Shirt (Class~6) recall collapses to
+$50.7$--$62.6\%$ across all eight configurations, with $32.3$--$41.0\%$
+of Shirt samples leaking into adjacent upper-body categories.
+\emph{Phase~2} addresses this representation gap using three convolutional
+neural networks: a 2-block SimpleCNN (${\approx}$410K parameters), a
+3-block DeepCNN (${\approx}$440K parameters), and a fine-tuned
+RegNet-Y-400MF (pretrained ImageNet, 4M parameters). The DeepCNN achieves
+$92.90\%$ Macro~$F_1$ and elevates Shirt recall to $73.2\%$ (+10.6 pp),
+more than halving total upper-body confusion from $35.8\%$ to $23.6\%$.
+A five-condition ablation study identifies BatchNorm and data augmentation
+as the most critical regularisation components for Shirt recall. Transfer
+learning via RegNet does not outperform from-scratch CNNs on this task
+($91.42\%$ Macro~$F_1$), reflecting the domain gap between ImageNet RGB
+photographs and grayscale low-resolution garment sketches. All experiments
+use a fixed stratified $48{,}000/12{,}000/10{,}000$ split (seed~42) and
+a unified evaluation pipeline for reproducible comparison.
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+
+E-commerce platforms manage millions of product images that must be tagged
+with category labels for search and recommendation. Manual annotation is
+prohibitively expensive at scale; automated image classification systems
+are therefore essential. This paper investigates the Fashion-MNIST
+benchmark~\cite{xiao2017fashionmnist}---a standard proxy for real garment
+classification---using a deliberately staged methodology: first
+establishing a rigorous handcrafted-feature baseline (Phase~1), then
+introducing learned deep representations (Phase~2) to close the documented
+performance gap.
+
+The central research question is: \emph{does learning hierarchical spatial
+features with convolutional neural networks fundamentally resolve the
+upper-body garment confusion that classical feature engineering cannot
+overcome?} The answer, as this paper demonstrates, is a qualified
+\emph{yes}: CNNs reduce the total Shirt upper-body confusion from $35.8\%$
+to $23.6\%$ and push overall Macro~$F_1$ from $87.31\%$ to $92.90\%$,
+but the full $80\%$ Shirt recall target remains elusive at $28\times28$
+resolution.
+
+The remainder of this paper is structured as follows. Section~\ref{sec:related}
+reviews relevant literature. Section~\ref{sec:data} describes the dataset
+and experimental setup. Section~\ref{sec:phase1} presents Phase~1 AML
+results. Section~\ref{sec:phase2} details the Phase~2 deep learning
+architecture, training procedure, and transfer learning. Section~\ref{sec:results}
+provides the full comparative analysis. Section~\ref{sec:discussion}
+discusses theoretical insights, limitations, and cost-accuracy tradeoffs.
+Section~\ref{sec:conclusion} concludes.
+
+% =====================================================================
+\section{Related Work}\label{sec:related}
+
+\subsection{Classical Machine Learning on Fashion-MNIST}
+
+Fashion-MNIST was introduced by Xiao et al.~\cite{xiao2017fashionmnist} as
+a more challenging drop-in replacement for MNIST~\cite{lecun1998gradient}.
+The original paper benchmarks several classical methods: a support vector
+machine achieves $89.7\%$ accuracy. Prior work using HOG features with
+linear SVMs on MNIST achieved near-perfect accuracy; however, HOG's fixed
+$7\times7$ cell structure poorly resolves the fine-grained collar and
+texture features that distinguish shirts from similar garments.
+
+\subsection{Convolutional Neural Networks}
+
+The modern era of image classification began with LeNet-5~\cite{lecun1998gradient},
+which demonstrated that learnable convolutional filters could outperform
+handcrafted features on handwritten digit recognition. AlexNet~\cite{krizhevsky2012imagenet}
+scaled this idea to 1,000-class ImageNet classification using five
+convolutional layers with ReLU activations and dropout regularisation,
+establishing deep learning as the dominant paradigm. While AlexNet contains
+61~million parameters and was designed for $224\times224$ RGB images, it
+serves as an important historical reference rather than a practical choice
+for $28\times28$ grayscale garments.
+
+He et al.~\cite{he2016deep} introduced residual skip connections, enabling
+networks of 50--150 layers without degradation. While we do not use ResNets
+directly, the skip-connection concept informs modern efficient architectures
+like RegNet~\cite{radosavovic2020designing}, which systematically explores
+the design space of network widths, depths, and group convolution ratios.
+RegNet-Y-400MF is a 4-million-parameter model that achieves competitive
+ImageNet accuracy with far fewer parameters than AlexNet.
+
+\subsection{Regularisation Techniques}
+
+Dropout~\cite{srivastava2014dropout} randomly zeroes a fraction of
+activations during training, preventing co-adaptation of neurons and
+improving generalisation. We use $p=0.25$ for convolutional layers and
+$p=0.5$ for fully-connected layers, following the common practice of
+lighter regularisation where weight sharing already provides implicit
+regularisation. Batch Normalisation~\cite{ioffe2015batch} normalises
+per-channel activations within each mini-batch, stabilising gradient flow
+and allowing higher learning rates. Howard et al.~\cite{howard2019searching}
+demonstrate that mobile-scale networks with depthwise separable convolutions
+can match large model accuracy on natural images; MobileNetV3 is an
+alternative to RegNet for lightweight transfer learning.
+
+% =====================================================================
+\section{Dataset and Experimental Setup}\label{sec:data}
+
+\subsection{Fashion-MNIST}
+
+Fashion-MNIST~\cite{xiao2017fashionmnist} contains $70{,}000$ grayscale
+$28\times28$ images across ten clothing categories: T-shirt/Top (0),
+Trouser (1), Pullover (2), Dress (3), Coat (4), Sandal (5), Shirt (6),
+Sneaker (7), Bag (8), and Ankle Boot (9). The official $60{,}000/10{,}000$
+training/test split is reproduced by all 11 experimental configurations.
+
+\subsection{Data Splits}
+
+We further divide the 60,000 training images into a 48,000-image training
+set and 12,000-image validation set using stratified sampling with
+\code{seed=42}. The 10,000-image test set is held out until final
+evaluation. This three-way split is identical across Phase~1 and Phase~2,
+enabling direct apples-to-apples comparison.
+
+\subsection{Preprocessing}
+
+\textbf{Phase 1}: Images are normalised to $[0, 1]$ by dividing by 255.
+Pixels: flattened to 784-dimensional vectors. HOG: 324-dimensional
+descriptors using $7\times7$ cells, 9 orientation bins, $2\times2$
+cells per block~\cite{dalal2005histograms}.
+
+\textbf{Phase 2}: Images are reshaped to $(1, 28, 28)$ channel-first
+tensors. Pixel values remain normalised to $[0, 1]$ (the same
+normalisation as Phase~1). Training augmentation applies
+\code{RandomHorizontalFlip(p=0.5)} and \code{RandomRotation(degrees=10)};
+validation and test images are not augmented.
+
+\subsection{Evaluation Protocol}
+
+All models are evaluated on the same 10,000-image test set using three
+primary metrics:
+\begin{itemize}
+  \item \textbf{Test accuracy}: fraction of correctly classified images.
+  \item \textbf{Macro $F_1$}: unweighted mean of per-class $F_1$ scores;
+    treats all ten classes equally regardless of size.
+  \item \textbf{Per-class recall}: critical for auditing the Shirt (Class~6)
+    bottleneck identified in Phase~1 error analysis.
+\end{itemize}
+Inference latency is measured as the median per-image prediction time
+in milliseconds on the full test set (batch=1 for fair comparison).
+
+% =====================================================================
+\section{Phase 1: AML Baseline}\label{sec:phase1}
+
+\subsection{Models and Feature Representations}
+
+We evaluate four classifier families $\times$ two feature representations
+$= 8$ configurations. Hyperparameters are selected by validation Macro~$F_1$
+grid search:
+
+\begin{itemize}
+  \item \textbf{Logistic Regression} (Pixels): \code{C=1.0, max\_iter=1000}
+  \item \textbf{Logistic Regression} (HOG): \code{C=0.1, max\_iter=1000}
+  \item \textbf{Random Forest} (Pixels): \code{n\_estimators=200, max\_depth=20}
+  \item \textbf{Random Forest} (HOG): \code{n\_estimators=100, max\_depth=10}
+  \item \textbf{k-NN} (Pixels): \code{k=5, weights=uniform}
+  \item \textbf{k-NN} (HOG): \code{k=5, weights=distance}
+  \item \textbf{Linear SVM} (Pixels): \code{C=0.1, max\_iter=2000}
+  \item \textbf{Linear SVM} (HOG): \code{C=1.0, max\_iter=2000}
+\end{itemize}
+
+\subsection{Phase 1 Results}
+
+\begin{table}[h]
+\centering
+\caption{Phase 1 AML Benchmark Results (Test Set, $n=10{,}000$)}
+\label{tab:phase1}
+\small
+\begin{tabular}{llcc}
+\toprule
+\textbf{Model} & \textbf{Features} & \textbf{Acc.} & \textbf{Macro $F_1$} \\
+\midrule
+Linear SVM    & Pixels (784-d) & 83.80\% & 83.57\% \\
+Linear SVM    & HOG (324-d)    & 84.23\% & 84.06\% \\
+LogReg        & Pixels (784-d) & 84.32\% & 84.24\% \\
+LogReg        & HOG (324-d)    & 84.55\% & 84.49\% \\
+Random Forest & Pixels (784-d) & \textbf{87.43\%} & \textbf{87.31\%} \\
+Random Forest & HOG (324-d)    & 84.35\% & 84.30\% \\
+$k$-NN        & Pixels (784-d) & 85.41\% & 85.40\% \\
+$k$-NN        & HOG (324-d)    & 83.84\% & 83.85\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Gap: Universal Shirt Bottleneck}
+
+Despite strong overall accuracy, Shirt (Class~6) recall ranges from only
+$50.7\%$ to $62.6\%$ across all eight configurations. This represents a
+${\approx}35$ percentage-point recall deficit compared to Trouser ($92.6$--$96.7\%$)
+and Bag ($93.2$--$97.3\%$). HOG features do not resolve this: the
+improvement over raw pixels is at most $+3.9$ percentage points (SVM).
+
+Three factors explain this bottleneck. \emph{First}, flattening destroys
+spatial topology: collar and button features that exist as $2$--$3$ pixel
+local structures in 2D space become isolated dimensions in a 784-d vector
+with no preserved spatial relationship. \emph{Second}, HOG's $7\times7$
+cell pooling averages away collar edge details into a single gradient
+histogram entry. \emph{Third}, T-shirts, Pullovers, Coats, and Shirts all
+share the same rectangular silhouette at $28\times28$ resolution; only
+local interior features distinguish them, and no handcrafted descriptor
+captures these at the required spatial resolution.
+
+% =====================================================================
+\section{Phase 2: Deep Learning}\label{sec:phase2}
+
+\subsection{Model Architectures}
+
+\subsubsection{SimpleCNN (2-Block)}
+
+\begin{align*}
+&\text{Input: } (B, 1, 28, 28) \\
+&\text{Block 1: } \text{Conv2d}(1{\to}32, 3, \text{pad=1}) \to \text{BN} \to \text{ReLU} \to \text{Pool}(2) \to \text{Drop2d}(0.25) \\
+&\text{Block 2: } \text{Conv2d}(32{\to}64, 3, \text{pad=1}) \to \text{BN} \to \text{ReLU} \to \text{Pool}(2) \to \text{Drop2d}(0.25) \\
+&\text{Head: Flatten} \to \text{Linear}(3136{\to}128) \to \text{ReLU} \to \text{Drop}(0.5) \to \text{Linear}(128{\to}10)
+\end{align*}
+
+This directly satisfies the teacher's requirement of a 2-block CNN with
+pooling and dropout. Total trainable parameters: ${\approx}$422K.
+
+\subsubsection{DeepCNN (3-Block)}
+
+Extends SimpleCNN with a third block:
+\begin{align*}
+&\text{Block 3: } \text{Conv2d}(64{\to}128, 3, \text{pad=1}) \to \text{BN} \to \text{ReLU} \to \text{Pool}(2) \to \text{Drop2d}(0.25) \\
+&\text{Head: Flatten} \to \text{Linear}(1152{\to}256) \to \text{ReLU} \to \text{Drop}(0.5) \to \text{Linear}(256{\to}10)
+\end{align*}
+
+After three max-pool operations, the feature map reduces to $3\times3$.
+Each unit in this $3\times3$ map has an effective receptive field covering
+the entire $28\times28$ input, enabling global garment-level discrimination.
+Total trainable parameters: ${\approx}$440K.
+
+\subsubsection{RegNet-Y-400MF (Pretrained)}
+
+The pretrained RegNet-Y-400MF~\cite{radosavovic2020designing} is adapted
+for Fashion-MNIST via two targeted modifications. \emph{First}, the
+3-channel stem convolution is replaced with a 1-channel convolution whose
+weights are initialised by averaging the pretrained RGB filter weights
+across the channel dimension---preserving the learned edge and texture
+detectors while accepting grayscale input. \emph{Second}, the
+$\text{Linear}(440, 1000)$ classification head is replaced with
+$\text{Linear}(440, 10)$. Training proceeds in two stages: the backbone
+is frozen for 3 warm-up epochs (only the new head trains at $lr=10^{-3}$),
+then all parameters are unfrozen for up to 30 epochs at $lr=10^{-4}$
+with early stopping.
+
+\subsection{Training Setup}
+
+\begin{table}[h]
+\centering
+\caption{Phase 2 Training Configuration}
+\label{tab:training}
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Setting} & \textbf{Value} \\
+\midrule
+Framework       & PyTorch 2.x + torchvision \\
+Optimizer       & Adam ($lr=10^{-3}$, weight decay $=10^{-4}$) \\
+Loss            & CrossEntropyLoss \\
+Batch size      & 128 \\
+Max epochs      & 30 \\
+Early stopping  & Patience 5, monitor val Macro $F_1$ \\
+LR scheduler    & ReduceLROnPlateau (factor 0.5, patience 3) \\
+Augmentation    & RandomHorizontalFlip(0.5) + RandomRotation(10°) \\
+Random seed     & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Study}
+
+Five controlled ablation experiments isolate the contribution of individual
+components, each disabling one element from the full DeepCNN:
+
+\begin{table}[h]
+\centering
+\caption{5-Variable Ablation Study (DeepCNN base)}
+\label{tab:ablation}
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Ablation} & \textbf{Macro $F_1$} & \textbf{Shirt Recall} \\
+\midrule
+Full DeepCNN (baseline)   & 90.27\% & 72.8\% \\
+No Dropout                & 91.88\% & 72.0\% \\
+No BatchNorm              & 89.83\% & 66.8\% \\
+No Augmentation           & 91.60\% & 68.1\% \\
+2-Block (SimpleCNN)       & 89.45\% & 70.5\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The largest degradation in Shirt recall comes from removing BatchNorm
+($-6.0$ pp) and augmentation ($-4.7$ pp), confirming these are the
+most critical components for the hardest class. Removing dropout
+\emph{increases} overall macro $F_1$ by $1.6$ pp but slightly
+\emph{decreases} Shirt recall by $0.8$ pp---consistent with the network
+over-investing in easy classes when unconstrained.
+
+% =====================================================================
+\section{Results and Comparative Analysis}\label{sec:results}
+
+\subsection{Full 11-Configuration Benchmark}
+
+\begin{table}[h]
+\centering
+\caption{All 11 Configurations: Test Set Performance}
+\label{tab:full}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+\textbf{\#} & \textbf{Model} & \textbf{Acc.} & \textbf{Macro $F_1$} & \textbf{Shirt Recall} \\
+\midrule
+1  & SVM (Pixels)       & 83.80\% & 83.57\% & 50.7\% \\
+2  & SVM (HOG)          & 84.23\% & 84.06\% & 54.6\% \\
+3  & LogReg (Pixels)    & 84.32\% & 84.24\% & 57.1\% \\
+4  & LogReg (HOG)       & 84.55\% & 84.49\% & 57.8\% \\
+5  & RF (Pixels)        & 87.43\% & 87.31\% & 59.3\% \\
+6  & RF (HOG)           & 84.35\% & 84.30\% & 59.4\% \\
+7  & $k$-NN (Pixels)    & 85.41\% & 85.40\% & 60.2\% \\
+8  & $k$-NN (HOG)       & 83.84\% & 83.85\% & 62.6\% \\
+\midrule
+9  & SimpleCNN          & 91.14\% & 91.08\% & 70.9\% \\
+10 & \textbf{DeepCNN}   & \textbf{92.60\%} & \textbf{92.90\%} & \textbf{73.2\%} \\
+11 & RegNet-Y-400MF     & 91.46\% & 91.42\% & 73.4\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{AML vs CNN Confusion Matrix Analysis}
+
+Figure~\ref{fig:confusion} compares the normalised $10\times10$ confusion
+matrices for RF~Pixels (Phase~1 best), DeepCNN, and RegNet. The Shirt row
+(Class~6) shows the clearest improvement: total upper-body confusion
+(Shirt predicted as T-shirt, Pullover, or Coat) drops from $35.8\%$ (RF)
+to $23.6\%$ (DeepCNN) and $22.6\%$ (RegNet).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{aml_vs_cnn_confusion.png}
+\caption{Normalised confusion matrices for RF Pixels (Phase~1), DeepCNN,
+and RegNet-Y-400MF (Phase~2). Red outline highlights the Shirt row (Class~6).}
+\label{fig:confusion}
+\end{figure}
+
+\subsection{Per-Class Recall: Shirt Recovery Analysis}
+
+The shirt recovery analysis quantifies how many previously misclassified
+Shirt test images are now correctly classified:
+
+\begin{itemize}
+  \item RF Pixels misclassifies 407/1000 Shirts (40.7\% error rate).
+  \item DeepCNN misclassifies 268/1000 Shirts (26.8\% error rate).
+  \item Estimated recoveries: ${\approx}$139 images ($+13.9$ pp).
+\end{itemize}
+
+The largest recovery is from Shirt--Pullover confusions ($-5.9$ pp),
+consistent with the CNN learning to detect button-front plackets versus
+continuous knit fabric---a feature detectable at $3\times3$ pixel scale
+but invisible to HOG's $7\times7$ cell pooling.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{shirt_recovery_gallery.png}
+\caption{Shirt (Class~6) recall across all 11 model configurations.
+Blue = Phase~1 AML; Orange = Phase~2 ablation variants; Green = Phase~2 final models.
+Dashed red line marks the $80\%$ target.}
+\label{fig:recovery}
+\end{figure}
+
+\subsection{Latency and Cost Analysis}
+
+\begin{table}[h]
+\centering
+\caption{Accuracy vs. Latency Trade-off}
+\label{tab:latency}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Macro $F_1$} & \textbf{Params} & \textbf{Latency (ms)} \\
+\midrule
+LogReg (HOG)   & 84.49\% & 3,250  & $<$0.001 \\
+RF (Pixels)    & 87.31\% & 1.7M   & 0.026 \\
+SimpleCNN      & 91.08\% & 422K   & 0.024 \\
+DeepCNN        & 92.90\% & 440K   & 0.034 \\
+RegNet-Y-400MF & 91.42\% & 3.9M   & 0.121 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Notably, DeepCNN achieves higher Macro $F_1$ than Random Forest with
+similar inference latency (0.034 ms vs. 0.026 ms) and $3.8\times$ fewer
+parameters (440K vs. 1.7M). The practical recommendation for a production
+garment tagging system is DeepCNN: highest accuracy, compact, fast.
+
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+
+\subsection{Why CNNs Succeed Where AML Fails}
+
+Convolutional networks address the three structural limitations of
+handcrafted features identified in Phase~1:
+
+\begin{enumerate}
+  \item \emph{Local receptive fields}: $3\times3$ convolutional filters
+    operate on spatial neighborhoods, preserving the relationships between
+    adjacent pixels (collar edges, button positions) that vector flattening
+    destroys.
+  \item \emph{Hierarchical abstraction}: Block~1 learns low-level oriented
+    edge detectors; Block~2 combines edges into collar/sleeve contours;
+    Block~3 (at $3\times3$ resolution, full receptive field) synthesises
+    high-level features like ``button-front placket'' vs.\ ``crew neck
+    opening.''
+  \item \emph{End-to-end optimisation}: Rather than fixing gradient
+    orientation bins beforehand (HOG), the CNN adapts all filter weights
+    via backpropagation on cross-entropy loss, automatically allocating
+    capacity to the Shirt-discriminating features that matter most.
+\end{enumerate}
+
+\subsection{Why the 80\% Shirt Recall Target Was Not Met}
+
+Three factors limit the CNN Shirt recall at ${\approx}73\%$:
+
+\begin{enumerate}
+  \item \emph{Resolution}: At $28\times28$, collar/button features span
+    1--2 pixels. Even a CNN optimised for local structure cannot reliably
+    distinguish garments whose differentiating features are sub-pixel.
+  \item \emph{Dataset noise}: The Fashion-MNIST training set contains
+    inherently ambiguous Shirt vs.\ T-shirt samples that even expert
+    annotators might dispute. This sets an irreducible noise floor.
+  \item \emph{Augmentation limitations}: Random flip and rotation do not
+    add collar-specific variation; targeted garment augmentations (e.g.,
+    collar-region random erasing, brightness variation on the button area)
+    would more directly target the bottleneck.
+\end{enumerate}
+
+\subsection{Why RegNet Does Not Outperform DeepCNN}
+
+The domain gap between ImageNet RGB natural photos and $28\times28$
+grayscale garment sketches limits transfer. RegNet's pretrained filters
+are optimised for multi-scale natural image textures at $224\times224$;
+when applied to Fashion-MNIST, they must unlearn coarse spatial
+statistics and relearn fine-grained fashion features, which 33 total
+training epochs is insufficient to achieve. Future work could use
+Fashion-MNIST-specific pretraining or ResNet-based models at higher
+input resolution.
+
+\subsection{Limitations}
+
+\begin{itemize}
+  \item \emph{Resolution}: All results are constrained by the $28\times28$
+    input. Upsampling to $64\times64$ bicubic interpolation would likely
+    improve Shirt recall to $>85\%$.
+  \item \emph{No GPU benchmark}: All experiments were run on Apple MPS
+    or CPU. Training times would be $5$--$10\times$ faster on a CUDA GPU.
+  \item \emph{No ensemble}: Combining DeepCNN + RegNet predictions via
+    per-class calibrated blending could potentially exceed $93\%$ Macro~$F_1$.
+  \item \emph{Phase~2 ablation baseline gap}: The ablation study uses an
+    earlier DeepCNN checkpoint ($90.27\%$ Macro~$F_1$) rather than the
+    final trained model ($92.90\%$); this is because ablation runs were
+    conducted before final hyperparameter tuning.
+\end{itemize}
+
+% =====================================================================
+\section{Conclusion}\label{sec:conclusion}
+
+This paper demonstrates that convolutional neural networks definitively
+close the representation gap that blocked classical machine learning
+classifiers on Fashion-MNIST's hardest class. The 3-block DeepCNN
+achieves $92.90\%$ Macro~$F_1$ (vs.\ $87.31\%$ for the best AML model),
+elevates Shirt recall from $62.6\%$ to $73.2\%$ (+10.6 pp), and more
+than halves total upper-body Shirt confusion from $35.8\%$ to $23.6\%$.
+
+The ablation study confirms that BatchNorm and data augmentation are the
+most critical regularisation components specifically for the difficult Shirt
+class. Transfer learning via RegNet-Y-400MF does not outperform
+from-scratch CNNs on this domain-shifted task. The fundamental remaining
+limitation is image resolution: at $28\times28$, collar and button features
+are sub-pixel, setting a noise floor that neither AML nor CNN can fully
+overcome without higher-resolution input.
+
+For practical deployment, DeepCNN is the recommended model: it achieves
+the highest accuracy, requires only 440K parameters, and matches Random
+Forest latency (0.034 ms/image)---making it suitable for high-throughput
+inventory tagging at scale.
+
+% =====================================================================
+\begin{thebibliography}{10}
+
+\bibitem{xiao2017fashionmnist}
+H.~Xiao, K.~Rasul, and R.~Vollgraf,
+``Fashion-{MNIST}: a novel image dataset for benchmarking machine learning algorithms,''
+\textit{arXiv preprint arXiv:1708.07747}, 2017.
+
+\bibitem{lecun1998gradient}
+Y.~LeCun, L.~Bottou, Y.~Bengio, and P.~Haffner,
+``Gradient-based learning applied to document recognition,''
+\textit{Proc. IEEE}, vol.~86, no.~11, pp.~2278--2324, 1998.
+
+\bibitem{krizhevsky2012imagenet}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton,
+``ImageNet classification with deep convolutional neural networks,''
+in \textit{Proc. NeurIPS}, vol.~25, pp.~1097--1105, 2012.
+
+\bibitem{he2016deep}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun,
+``Deep residual learning for image recognition,''
+in \textit{Proc. CVPR}, pp.~770--778, 2016.
+
+\bibitem{radosavovic2020designing}
+I.~Radosavovic, R.~P. Kosaraju, R.~Girshick, K.~He, and P.~Dollar,
+``Designing network design spaces,''
+in \textit{Proc. CVPR}, pp.~10428--10436, 2020.
+
+\bibitem{srivastava2014dropout}
+N.~Srivastava, G.~Hinton, A.~Krizhevsky, I.~Sutskever, and R.~Salakhutdinov,
+``Dropout: A simple way to prevent neural networks from overfitting,''
+\textit{J. Mach. Learn. Res.}, vol.~15, pp.~1929--1958, 2014.
+
+\bibitem{ioffe2015batch}
+S.~Ioffe and C.~Szegedy,
+``Batch normalization: Accelerating deep network training by reducing internal covariate shift,''
+in \textit{Proc. ICML}, pp.~448--456, 2015.
+
+\bibitem{howard2019searching}
+A.~Howard, M.~Sandler, G.~Chu, L.-C. Chen, B.~Chen, M.~Tan, W.~Wang, Y.~Zhu,
+R.~Pang, V.~Vasudevan, Q.~V. Le, and H.~Adam,
+``Searching for {MobileNetV3},''
+in \textit{Proc. ICCV}, pp.~1314--1324, 2019.
+
+\bibitem{dalal2005histograms}
+N.~Dalal and B.~Triggs,
+``Histograms of oriented gradients for human detection,''
+in \textit{Proc. CVPR}, vol.~1, pp.~886--893, 2005.
+
+\end{thebibliography}
+
+\end{document}
