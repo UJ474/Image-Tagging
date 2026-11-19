@@ -333,3 +333,4 @@ This hierarchy exactly addresses the Phase 1 bottleneck: HOG bins encode gradien
 | Error analysis figures | `phase2_reports/figures/` | Confusion matrices, gallery |
 
 All models were trained with `seed=42`, `torch.manual_seed(42)`, and `np.random.seed(42)`. The same 48k/12k/10k data split (from `src/aml/data.get_train_val_test_splits()`) was used in both Phase 1 and Phase 2.
+
